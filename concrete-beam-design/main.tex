@@ -1,0 +1,186 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize CONCRETE-BEAM-DESIGN}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Concrete Beam Strength --- Design Methods}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Shear}
+
+\subsection{Concrete Contribution $V_c$}
+
+Primary (ACI 318 simplified):
+\begin{equation}
+V_c = 2 \lambda \sqrt{f'_c} \, b_w \, d
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\lambda$ & lightweight concrete modification factor, 1.0 normal weight \\
+$f'_c$ & specified concrete compressive strength [psi] \\
+$b_w$ & web width [in] \\
+$d$ & effective depth to tension steel centroid [in] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries LIMITS}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.3in}p{4.0in}@{}}
+Stirrups required & when $V_u > 0.5\,\phi V_c$ \\
+\end{tabular}
+}
+
+\subsection{Steel Contribution $V_s$}
+
+\begin{equation}
+V_s = \frac{A_v \, f_{yt} \, d}{s}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$A_v$ & area of shear reinforcement within spacing $s$ [in$^2$] \\
+$f_{yt}$ & yield strength of transverse reinforcement [psi] \\
+$s$ & stirrup spacing along member axis [in] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries LIMITS}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.3in}p{4.0in}@{}}
+Upper cap on $V_s$ & $V_s \leq 8\sqrt{f'_c}\, b_w d$ \\
+Min stirrup area & $A_{v,\min} = \max\!\left(0.75\sqrt{f'_c}\,\dfrac{b_w s}{f_{yt}},\ \dfrac{50\, b_w s}{f_{yt}}\right)$ \\
+Max spacing, $V_s \leq 4\sqrt{f'_c}\,b_w d$ & $s_{\max} = \min(d/2,\ 24\text{ in})$ \\
+Max spacing, $V_s > 4\sqrt{f'_c}\,b_w d$ & $s_{\max} = \min(d/4,\ 12\text{ in})$ \\
+\end{tabular}
+}
+
+\subsection{Combined}
+
+\begin{equation}
+\phi V_n = \phi (V_c + V_s) \geq V_u, \qquad \phi = 0.75
+\end{equation}
+
+\section{Moment}
+
+\subsection{Stress Block Depth $a$}
+
+\begin{equation}
+a = \frac{f_y A_s}{0.85 f'_c b}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$f_y$ & yield strength of longitudinal tension reinforcement [psi] \\
+$A_s$ & area of longitudinal tension reinforcement [in$^2$] \\
+$f'_c$ & specified concrete compressive strength [psi] \\
+$b$ & width of compression face [in] \\
+\end{tabular}
+}
+
+\subsection{Nominal Moment Capacity}
+
+\begin{equation}
+\phi M_n = \phi f_y A_s \left( d - \frac{a}{2} \right), \qquad \phi = 0.9
+\end{equation}
+
+\subsection{Required Steel Area $A_{s,\text{req}}$}
+
+Combining $a$ and $\phi M_n \geq M_u$ and solving the quadratic in $a$:
+
+\begin{equation}
+A_{s,\text{req}} = \frac{0.85 f'_c b}{f_y} \left[ d - \sqrt{d^2 - \frac{2 M_u}{0.85\, \phi\, f'_c\, b}} \right]
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$M_u$ & factored moment demand [lb-in] \\
+\end{tabular}
+}
+
+\section{Deflection}
+
+\subsection{Cracking Moment $M_{cr}$}
+
+\begin{equation}
+M_{cr} = \frac{f_r \, I_g}{y_t}, \qquad f_r = 7.5 \lambda \sqrt{f'_c}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$f_r$ & modulus of rupture [psi] \\
+$I_g$ & gross (uncracked) moment of inertia [in$^4$] \\
+$y_t$ & distance from centroid to extreme tension fiber [in] \\
+\end{tabular}
+}
+
+\subsection{Cracked Transformed Section $I_{cr}$}
+
+Modular ratio and concrete modulus:
+\begin{equation}
+n = \frac{E_s}{E_c}, \qquad E_c = 57{,}000 \sqrt{f'_c} \ \text{[psi]}
+\end{equation}
+
+Neutral axis depth $kd$ from first moments about the NA (tension concrete ignored):
+\begin{equation}
+\frac{b (kd)^2}{2} = n A_s (d - kd)
+\end{equation}
+
+Cracked transformed moment of inertia:
+\begin{equation}
+I_{cr} = \frac{b (kd)^3}{3} + n A_s (d - kd)^2
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$n$ & modular ratio, steel to concrete \\
+$E_s$ & steel modulus of elasticity, typically 29{,}000 ksi \\
+$E_c$ & concrete modulus of elasticity [psi] \\
+$kd$ & depth from extreme compression fiber to neutral axis [in] \\
+\end{tabular}
+}
+
+\subsection{Effective Moment of Inertia $I_e$ (Branson)}
+
+\begin{equation}
+I_e = \left( \frac{M_{cr}}{M_a} \right)^{\!3} I_g + \left[ 1 - \left( \frac{M_{cr}}{M_a} \right)^{\!3} \right] I_{cr}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$M_a$ & maximum service moment at the stage deflection is computed [lb-in] \\
+\end{tabular}
+}
+
+\end{document}
