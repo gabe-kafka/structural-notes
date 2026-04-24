@@ -2,6 +2,23 @@
 
 Help Gabe generate engineering notes. **Do not add any material that is not prompted by Gabe.** Always use the template. Follow `/Users/gabe/Desktop/canonical docs/style-guide.md` — cockpit density, mono headings, zero ornament, maximum material per page.
 
+## Workflow for a new note
+
+Follow this loop every time Gabe opens the repo to start a new note.
+
+1. **Scaffold the folder.** `mkdir structural-notes/<slug>` (kebab-case, e.g. `concrete-column-design`). Copy the Template below into `<slug>/main.tex`. Substitute `<DOC-ID>` with the slug in UPPERCASE and `<NOTE TITLE>` with the subject Gabe gives.
+2. **Get section names from Gabe.** Ask what sections go in if not already stated. Add only those section headers in order, bodies empty. No subsections, no placeholder prose.
+3. **Compile + open on every change.** From the note folder: `pdflatex main.tex` then `open main.pdf`. Do this after each edit so Gabe sees the live result.
+4. **Fill content only when prompted.** When Gabe states an equation or concept:
+   - Equation in `\begin{equation}...\end{equation}`.
+   - Immediately followed by a mono legend tabular (`{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}} ... \end{tabular}}`) defining **only new** variables — don't re-define anything already in the doc.
+   - When Gabe asks for limits, add a `\medskip{\ttfamily\footnotesize\bfseries LIMITS}` label followed by a tabular of condition-value rows, placed inside the subsection it constrains.
+   - Never volunteer additional equations, variants, special cases, or commentary.
+5. **Ship.** Stage the note's `main.tex` + `main.pdf` (and any new shared assets). Safety hook blocks direct pushes to main — do NOT attempt `git push origin main`. Instead:
+   - `git checkout -b <slug>` → `git commit` → `git push -u origin <slug>`
+   - `gh pr create --title "..." --body "..."`
+   - Hand Gabe the merge command: `gh pr merge <N> --merge --delete-branch -R gabe-kafka/structural-notes`.
+
 ## Template (`main.tex` in each note folder)
 
 ```latex
