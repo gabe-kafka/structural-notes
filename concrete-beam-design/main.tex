@@ -171,15 +171,44 @@ $kd$ & depth from extreme compression fiber to neutral axis [in] \\
 \end{tabular}
 }
 
-\subsection{Effective Moment of Inertia $I_e$ (Branson)}
+\subsection{Effective Moment of Inertia $I_e$ (ACI 318-19 \S 24.2.3.5)}
 
+Section is uncracked while $M_a \leq \tfrac{2}{3} M_{cr}$:
 \begin{equation}
-I_e = \left( \frac{M_{cr}}{M_a} \right)^{\!3} I_g + \left[ 1 - \left( \frac{M_{cr}}{M_a} \right)^{\!3} \right] I_{cr}
+I_e = I_g
+\end{equation}
+
+Once $M_a > \tfrac{2}{3} M_{cr}$, use the Bischoff form:
+\begin{equation}
+I_e = \frac{I_{cr}}{1 - \left( \dfrac{2}{3} \dfrac{M_{cr}}{M_a} \right)^{\!2} \!\left( 1 - \dfrac{I_{cr}}{I_g} \right)}
 \end{equation}
 
 {\ttfamily\footnotesize
 \begin{tabular}{@{}ll@{}}
 $M_a$ & maximum service moment at the stage deflection is computed [lb-in] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries LIMITS}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.3in}p{4.0in}@{}}
+Upper cap & $I_e \leq I_g$ \\
+Asymptote & $I_e \to I_{cr}$ as $M_a \to \infty$ \\
+\end{tabular}
+}
+
+\subsection{Procedure for $I_e$}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{0.25in}p{6.0in}@{}}
+1. & Compute $I_g = b h^3 / 12$ and $y_t = h/2$. \\
+2. & Compute $f_r = 7.5 \lambda \sqrt{f'_c}$ and $M_{cr} = f_r I_g / y_t$. \\
+3. & If $M_a \leq \tfrac{2}{3} M_{cr}$, set $I_e = I_g$ and stop. \\
+4. & Compute $E_c = 57{,}000 \sqrt{f'_c}$ and $n = E_s / E_c$. \\
+5. & Solve the cracked-section quadratic for $kd$, then $I_{cr} = b (kd)^3 / 3 + n A_s (d - kd)^2$. \\
+6. & Apply Bischoff to get $I_e$, then cap at $I_g$. \\
+7. & $E I_{\text{eff}} = E_c I_e$ for the deflection calculation. \\
 \end{tabular}
 }
 
