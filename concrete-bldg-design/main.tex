@@ -1,0 +1,134 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize CONCRETE-BLDG-DESIGN}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Concrete Building Design (ETABS)}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Prelim Wall Layout - Story Drift Governs}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.2in}p{4.2in}@{}}
+Check & Lateral system proof of concept \\
+Limit & $\Delta < L/400$ \\
+Governing load case & $1.0W$ \quad 25-year wind = 87 mph \\
+\end{tabular}
+}
+
+\section{Foundation Prelim Design}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.2in}p{4.2in}@{}}
+Check & Foundation prelim design \\
+Limit & $q_a = 2$ tsf, 3 tsf, etc. \\
+Governing load case & ASD earthquake and wind combinations \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries ASD: EQ}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{6.9in}@{}}
+$1.0D + 0.7E$ \\
+$1.0D + 0.525E + 0.75L$ \\
+$0.6D + 0.7E$ \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries ASD: WIND}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{6.9in}@{}}
+700-year wind = 36,500 weeks, 117 mph \\
+$1.0D + 0.6W$ \\
+$1.0D + 0.75L + 0.45W$ \\
+$0.6D + 0.6W$ \\
+\end{tabular}
+}
+
+\section{Shear Wall Design}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.2in}p{4.2in}@{}}
+Check & Design steel reinforcement in shear wall \\
+Limit & Consider cracking limit $f_r$ \\
+Governing load case & LRFD earthquake and wind combinations \\
+\end{tabular}
+}
+
+\begin{equation}
+f_r = 7.5 \lambda \sqrt{f'_c}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$f_r$ & modulus of rupture [psi] \\
+$\lambda$ & lightweight concrete modification factor, 1.0 normal weight \\
+$f'_c$ & specified concrete compressive strength [psi] \\
+\end{tabular}
+}
+
+\begin{equation}
+A_{s,\text{req}} = \frac{0.85 f'_c b}{f_y}
+\left[ d - \sqrt{d^2 - \frac{2 M_u}{0.85\, \phi\, f'_c\, b}} \right]
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$A_{s,\text{req}}$ & required steel area [in$^2$] \\
+$b$ & wall thickness or compression width [in] \\
+$f_y$ & yield strength of longitudinal reinforcement [psi] \\
+$d$ & effective depth to tension steel centroid [in] \\
+$M_u$ & factored moment demand [lb-in] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries LRFD: EQ}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{6.9in}@{}}
+$1.2D + 1.0E$ \\
+$0.9D + 1.0E$ \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries LRFD: WIND}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{6.9in}@{}}
+$1.2D + 1.0W + 1.0L$ \\
+$0.9D + 1.0W$ \\
+\end{tabular}
+}
+
+\end{document}
