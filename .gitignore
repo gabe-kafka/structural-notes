@@ -7,3 +7,4 @@
 *.synctex.gz
 build.log
 .DS_Store
+references/*.pdf

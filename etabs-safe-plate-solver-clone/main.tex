@@ -1,0 +1,478 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize ETABS-SAFE-PLATE-SOLVER-CLONE}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{ETABS/SAFE Plate Solver Clone --- Scaffold}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Purpose}
+
+Define a general finite-element plate solver for slab behavior.
+
+\medskip{\ttfamily\footnotesize\bfseries PRIMARY OUTPUTS}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.7in}p{4.8in}@{}}
+Displacements & nodal $w$, $\theta_x$, $\theta_y$ or selected plate DOFs \\
+Reactions & support reactions at constrained DOFs and support regions \\
+Support actions & resultants such as $V$, $M_x$, $M_y$ over finite supports \\
+Fields & optional moments, shears, stresses, deflections, contours \\
+Diagnostics & convergence, equilibrium, mesh quality, support resolution \\
+\end{tabular}
+}
+
+\section{Consumers}
+
+The solver is not a punching-shear solver. Punching shear is the first consumer
+of support actions.
+
+\medskip{\ttfamily\footnotesize\bfseries DOWNSTREAM USES}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Punching shear & consume $V_u,M_{ux},M_{uy}$ and run critical-section $J_c$ check \\
+Slab transfer & integrate column/wall reactions and support eccentricity \\
+Deflection & report service displacement fields and envelopes \\
+Validation & compare support reactions, deflections, and moment fields to references \\
+Design workflows & future strip forces, envelopes, and reinforcement design inputs \\
+\end{tabular}
+}
+
+\section{Reference Target}
+
+ETABS/SAFE-style slab analysis is the validation target. The goal is not to
+copy private implementation details, but to match the public engineering
+behavior closely enough that benchmark models produce the same reactions,
+support moments, deflections, and downstream punching demands within documented
+tolerances.
+
+\medskip{\ttfamily\footnotesize\bfseries TARGET BEHAVIOR}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Shell/plate model & slab represented by meshed plate/shell finite elements \\
+Object supports & point, line, wall, column, spring, and area/patch supports \\
+Rigid zones & finite column/support regions avoid point-singularity behavior \\
+Load cases & solve individual cases and factored combinations explicitly \\
+Postprocessing & recover support actions, fields, envelopes, and code-check inputs \\
+\end{tabular}
+}
+
+Benchmark success means the same physical model, loading, supports, and mesh
+intent give matching results against ETABS/SAFE, not merely internal
+equilibrium.
+
+\section{Development Reality}
+
+A useful solver kernel can be built before ETABS/SAFE automation exists, but it
+cannot be accepted as an ETABS/SAFE clone until benchmark comparison is running.
+
+\medskip{\ttfamily\footnotesize\bfseries LOCAL WORK WITHOUT CSI}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.0in}p{4.5in}@{}}
+Element unit tests & stiffness symmetry, rigid-body modes, patch tests \\
+Load-vector tests & applied load sums and consistent nodal loading \\
+Constraint tests & point, line, spring, patch, and settlement mapping \\
+Equilibrium tests & recovered reactions balance applied load \\
+Closed-form checks & simple square/strip plate deflection benchmarks \\
+Symmetry checks & mirrored models produce mirrored reactions and moments \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries REQUIRES ETABS/SAFE}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.0in}p{4.5in}@{}}
+Benchmark parity & reactions, moments, deflections, and field results vs CSI \\
+Support tuning & column rigid zones, wall supports, springs, patch behavior \\
+Meshing tolerance & how fine the mesh must be for CSI-like support actions \\
+Punching demands & $V_u,M_{ux},M_{uy}$ matching SAFE-style punching inputs \\
+Production acceptance & release only after fixture set passes tolerances \\
+\end{tabular}
+}
+
+\section{Tuning Philosophy}
+
+Treat ETABS/SAFE as the reference oracle for practical two-way slab behavior.
+Tune only documented modeling choices, not arbitrary correction factors.
+
+\medskip{\ttfamily\footnotesize\bfseries TUNABLE MODELING CHOICES}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.1in}p{4.4in}@{}}
+Element formulation & DKT vs Mindlin/Reissner or later mixed element \\
+Support representation & point, line, spring, rigid patch, elastic patch \\
+Rigid zone extent & finite column/support footprint behavior \\
+Mesh strategy & object-based meshing, local refinement, element shape limits \\
+Result smoothing & raw element fields vs averaged display/design fields \\
+Load application & area, line, point, and combination handling \\
+\end{tabular}
+}
+
+Do not tune by applying hidden multipliers to results. If a benchmark does not
+match, first identify whether the cause is element formulation, support model,
+mesh, load case definition, units, or result recovery.
+
+\section{Model Inputs}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.7in}p{4.8in}@{}}
+Geometry & slab polygon, openings, levels, thickness regions \\
+Material & $E_c$, $\nu$, density, cracking modifiers if used \\
+Loads & area, line, point, thermal, settlement, load cases and combinations \\
+Supports & point pins, point springs, line/wall supports, finite patches, rotational springs \\
+Mesh controls & target edge length, local refinement, support footprint resolution \\
+\end{tabular}
+}
+
+\section{Coordinate System}
+
+\begin{equation}
+x,y = \text{slab plan axes}, \qquad z = \text{vertical}
+\end{equation}
+
+Use one explicit sign convention throughout the solver.
+
+\medskip{\ttfamily\footnotesize\bfseries PROPOSED CONVENTION}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.7in}p{4.8in}@{}}
+$w$ & positive downward vertical displacement \\
+$q$ & positive downward pressure \\
+$V$ & positive downward force transferred from slab to support \\
+$M_x,M_y$ & right-hand-rule support moments about global axes, with signs documented \\
+\end{tabular}
+}
+
+\section{Element Formulation}
+
+Open decision: choose the production plate element.
+
+\medskip{\ttfamily\footnotesize\bfseries CANDIDATES}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.7in}p{4.8in}@{}}
+DKT triangle & thin-plate bending, three DOFs per node, good for Kirchhoff plates \\
+Mindlin/Reissner & includes transverse shear, needs locking control for thin slabs \\
+Mixed formulation & possible future route for shear forces and thick/slender robustness \\
+\end{tabular}
+}
+
+For the first solver contract, only require that each element provides:
+
+\begin{equation}
+\mathbf K_e,\qquad \mathbf f_e,\qquad \text{element recovery operators}
+\end{equation}
+
+\section{Load Vector}
+
+Convert loads into consistent element or nodal load vectors.
+
+\begin{equation}
+\mathbf f_e = \int_{A_e} \mathbf N^T q\,dA
+\end{equation}
+
+For a simple triangular element with linear vertical displacement interpolation:
+
+\begin{equation}
+F_{w,i}^{(e)} = \frac{q A_e}{3}
+\end{equation}
+
+Open item: define how rotational load terms are handled for the chosen plate
+element.
+
+\section{Support Types}
+
+The solver must support multiple boundary-condition families.
+
+\medskip{\ttfamily\footnotesize\bfseries SUPPORT CATALOG}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Point pin & constrain $w$ at a node; rotations free \\
+Point fixed & constrain $w,\theta_x,\theta_y$ at a node \\
+Point spring & add translational and/or rotational spring stiffness \\
+Line/wall support & constrain or spring nodes along a wall/polyline \\
+Finite patch & support over a column, bearing plate, wall end, or reaction area \\
+Rigid patch & finite patch with master-slave rigid vertical kinematics \\
+Elastic foundation & distributed Winkler/Pasternak style support over an area \\
+Settlement & prescribed support displacement at constrained or spring-supported DOFs \\
+\end{tabular}
+}
+
+\section{Point and Line Supports}
+
+Pinned point support:
+
+\begin{equation}
+w_i = 0
+\end{equation}
+
+Rotationally fixed point support:
+
+\begin{equation}
+w_i=0,\qquad \theta_{x,i}=0,\qquad \theta_{y,i}=0
+\end{equation}
+
+Spring support:
+
+\begin{equation}
+\mathbf K \leftarrow \mathbf K + \mathbf K_s
+\end{equation}
+
+Line supports are modeled by applying compatible point constraints or springs to
+mesh nodes on the support line, or by a distributed support element.
+
+\section{Finite Support Patches}
+
+Finite patches are required when the support footprint matters.
+
+\medskip{\ttfamily\footnotesize\bfseries EXAMPLES}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Column footprint & rectangular or polygonal area around column \\
+Bearing plate & finite support under equipment or transfer load \\
+Wall strip & finite-width wall support, not just a line \\
+Odd geometry & clipped or rotated reaction areas \\
+\end{tabular}
+}
+
+Mesh requirements:
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Master node & at patch centroid when rigid patch is used \\
+Slave nodes & enough mesh nodes inside patch to avoid point-support behavior \\
+Refinement & target edge tied to support size, not only slab span \\
+Diagnostics & slave count, master offset, patch area, clipped footprint \\
+\end{tabular}
+}
+
+\section{Rigid Patch Kinematics}
+
+For rigid vertical patch behavior:
+
+\begin{equation}
+w_s = w_c + \theta_y \Delta x - \theta_x \Delta y
+\end{equation}
+
+Transformation form:
+
+\begin{equation}
+\mathbf u = \mathbf T\mathbf q,\qquad
+\mathbf K_r = \mathbf T^T\mathbf K\mathbf T,\qquad
+\mathbf F_r = \mathbf T^T\mathbf F
+\end{equation}
+
+Open item: decide when a rigid patch is mandatory versus optional.
+
+\section{Assembly and Solve}
+
+Assemble:
+
+\begin{equation}
+\mathbf K = \sum_e \mathbf A_e^T\mathbf K_e\mathbf A_e,\qquad
+\mathbf F = \sum_e \mathbf A_e^T\mathbf f_e
+\end{equation}
+
+Apply constraints and solve:
+
+\begin{equation}
+\mathbf K_r\mathbf q = \mathbf F_r
+\end{equation}
+
+Then expand to full DOFs:
+
+\begin{equation}
+\mathbf u = \mathbf T\mathbf q
+\end{equation}
+
+\section{Reaction Recovery}
+
+At a constrained DOF:
+
+\begin{equation}
+R_i = (\mathbf K\mathbf u)_i - F_i
+\end{equation}
+
+Demand on the support is the opposite sign:
+
+\begin{equation}
+P_i = F_i - (\mathbf K\mathbf u)_i
+\end{equation}
+
+For springs, the support demand can also be recovered from spring deformation:
+
+\begin{equation}
+\mathbf P_s = \mathbf K_s(\mathbf u-\mathbf u_0)
+\end{equation}
+
+\section{Support Resultants}
+
+For any finite support region with vertical demand samples $P_i$:
+
+\begin{align}
+V &= \sum_i P_i \\
+M_x &= \sum_i (y_i-y_c)P_i \\
+M_y &= -\sum_i (x_i-x_c)P_i
+\end{align}
+
+Equivalent eccentricity form:
+
+\begin{align}
+x_R &= \frac{\sum_i x_iP_i}{V}, \qquad
+y_R = \frac{\sum_i y_iP_i}{V} \\
+e_x &= x_R-x_c,\qquad e_y=y_R-y_c \\
+M_x &= V e_y,\qquad M_y=-V e_x
+\end{align}
+
+These resultants are general. Punching shear is one workflow that consumes them.
+
+\section{Local Axes}
+
+For a support patch rotated by $\theta$:
+
+\begin{align}
+M_1 &= M_x\cos\theta + M_y\sin\theta \\
+M_2 &= -M_x\sin\theta + M_y\cos\theta
+\end{align}
+
+Open item: define local-axis convention once and reuse it for columns, walls,
+loads, and punching checks.
+
+\section{Field Recovery}
+
+Open recovery targets:
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Deflection field & nodal and interpolated $w$ \\
+Rotation field & $\theta_x,\theta_y$ \\
+Plate moments & $M_x,M_y,M_{xy}$ from element recovery \\
+Plate shears & $Q_x,Q_y$ if supported by element formulation \\
+Contours & smoothed or element-native display values \\
+\end{tabular}
+}
+
+\section{Diagnostics}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.0in}p{4.5in}@{}}
+Equilibrium & recovered reactions balance applied loads \\
+Convergence & solver residual and iteration count \\
+Mesh quality & element shape, fallback tier, local refinement \\
+Support resolution & patch slave count, master offset, footprint coverage \\
+Conditioning & warnings for weak restraints or near-mechanisms \\
+\end{tabular}
+}
+
+\section{ETABS/SAFE Validation}
+
+Validation should progress from simple closed-form checks to CSI comparison
+fixtures.
+
+\medskip{\ttfamily\footnotesize\bfseries COMPARISON OUTPUTS}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Global equilibrium & total vertical reactions vs total applied load \\
+Support reactions & per-column and per-wall vertical reactions \\
+Support moments & column/support $M_x,M_y$ and local-axis moments \\
+Deflections & selected nodal and maximum slab deflections \\
+Field recovery & plate moment contours where element assumptions match \\
+Punching demands & $V_u,M_{ux},M_{uy}$ passed into the $J_c$ check \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries FIXTURE SET}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Single-panel slab & closed-form and CSI comparison \\
+Column grid & interior, edge, and corner support actions \\
+Wall-supported slab & line support reactions and moments \\
+Rotated columns & local/global moment transformation \\
+Openings/irregular slab & mesh clipping and support-action stability \\
+Patch sensitivity & point support vs finite patch vs rigid zone behavior \\
+\end{tabular}
+}
+
+Each comparison fixture should store the exported CSI model setup, exported
+result tables, solver input JSON, and tolerance notes.
+
+\medskip{\ttfamily\footnotesize\bfseries ACCEPTANCE GATE}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.7in}@{}}
+Local solver gate & closed-form, symmetry, and equilibrium tests pass \\
+CSI parity gate & curated ETABS/SAFE fixtures pass stated tolerances \\
+Stability gate & unstable support/action diagnostics block downstream design checks \\
+Regression gate & every fixture remains reproducible from stored inputs and exports \\
+\end{tabular}
+}
+
+\section{Check Order}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{0.8in}p{5.9in}@{}}
+1 & Build plate geometry, materials, loads, supports, and mesh controls \\
+2 & Mesh slab with refinement near supports, openings, and result regions \\
+3 & Assemble element stiffness and load vectors \\
+4 & Apply point, line, spring, patch, settlement, and rigid constraints \\
+5 & Solve reduced plate system \\
+6 & Expand full displacement vector \\
+7 & Recover reactions, support resultants, and field quantities \\
+8 & Run diagnostics and mark each recovered result stable/degraded/unstable \\
+9 & Compare benchmark fixtures against ETABS/SAFE exports before production use \\
+10 & Pass accepted recovered artifacts to downstream workflows \\
+\end{tabular}
+}
+
+\section{Review Questions}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{0.8in}p{5.9in}@{}}
+Q1 & Which element formulation should be production v1: DKT or Mindlin? \\
+Q2 & What support types are required for v1 beyond point, line, and finite patch? \\
+Q3 & When should a finite patch use rigid kinematics versus elastic distribution? \\
+Q4 & What mesh quality and support-resolution gates make a result unstable? \\
+Q5 & Should support resultants always be recovered by force integration, spring reaction, or both? \\
+Q6 & Which ETABS/SAFE settings must be mirrored for benchmark parity? \\
+Q7 & What tolerances are acceptable for reactions, moments, deflections, and field outputs? \\
+Q8 & What result artifacts should be persisted for model-space visualization? \\
+\end{tabular}
+}
+
+\end{document}
