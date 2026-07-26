@@ -1,0 +1,242 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize PUNCHING-SHEAR}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Punching Shear}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Critical Section}
+
+Critical perimeter at $d/2$ from the column face, concentrated load, or reaction area.
+
+\begin{equation}
+A_c = b_o d
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$A_c$ & area of concrete critical section [in$^2$] \\
+$b_o$ & perimeter of critical section [in] \\
+$d$ & average effective slab depth [in] \\
+\end{tabular}
+}
+
+\section{Factored Shear Stress}
+
+\begin{equation}
+v_u = \frac{V_u}{A_c}
+      + \frac{\gamma_{vx} M_{ux} c_y}{J_{cx}}
+      + \frac{\gamma_{vy} M_{uy} c_x}{J_{cy}}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$v_u$ & factored two-way shear stress at critical section [psi] \\
+$V_u$ & factored shear transferred across critical section [lb] \\
+$\gamma_{vx}$ & fraction of $M_{ux}$ transferred by eccentricity of shear \\
+$M_{ux}$ & factored unbalanced moment about $x$ axis [lb-in] \\
+$c_y$ & distance from critical-section centroid to checked perimeter point in $y$ direction [in] \\
+$J_{cx}$ & critical-section property for stress from $M_{ux}$ [in$^4$] \\
+$\gamma_{vy}$ & fraction of $M_{uy}$ transferred by eccentricity of shear \\
+$M_{uy}$ & factored unbalanced moment about $y$ axis [lb-in] \\
+$c_x$ & distance from critical-section centroid to checked perimeter point in $x$ direction [in] \\
+$J_{cy}$ & critical-section property for stress from $M_{uy}$ [in$^4$] \\
+\end{tabular}
+}
+
+\subsection{$J_c$ From Critical Section Geometry}
+
+\begin{equation}
+J_c = \sum_i \left(I_i + A_i r_i^2\right)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$I_i$ & segment property about its own centroidal axis [in$^4$] \\
+$A_i$ & segment area of critical section [in$^2$] \\
+$r_i$ & distance from segment centroid to centroidal axis of critical section [in] \\
+\end{tabular}
+}
+
+\subsection{Moment Transfer Fraction}
+
+\begin{equation}
+\gamma_v = 1 - \gamma_f, \qquad
+\gamma_f = \frac{1}{1 + \frac{2}{3}\sqrt{b_1/b_2}}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\gamma_v$ & fraction of unbalanced moment transferred by eccentricity of shear \\
+$\gamma_f$ & fraction of unbalanced moment transferred by flexure \\
+$b_1$ & critical-section width perpendicular to axis of moment [in] \\
+$b_2$ & critical-section width parallel to axis of moment [in] \\
+\end{tabular}
+}
+
+\section{Concrete Shear Strength}
+
+\begin{equation}
+v_c = \min\!\left\{
+\begin{aligned}
+&4 \lambda_s \lambda \sqrt{f'_c} \\
+&2\left(1+\frac{2}{\beta}\right)\lambda_s \lambda \sqrt{f'_c} \\
+&\left(2+\frac{\alpha_s d}{b_o}\right)\lambda_s \lambda \sqrt{f'_c}
+\end{aligned}
+\right\}
+\end{equation}
+
+\begin{equation}
+\lambda_s = \min\!\left(1.0,\ \sqrt{\frac{2}{1+d/10}}\right)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$v_c$ & nominal two-way shear stress from concrete [psi] \\
+$\lambda_s$ & size effect factor, $d$ in inches \\
+$f'_c$ & specified concrete compressive strength [psi] \\
+$\alpha_s$ & 40 interior, 30 edge, 20 corner \\
+\end{tabular}
+}
+
+\section{Headed Shear Studs}
+
+\subsection{Inner Critical Section}
+
+\begin{equation}
+v_{c,\text{stud}} = \min\!\left\{
+\begin{aligned}
+&3 \lambda_s \lambda \sqrt{f'_c} \\
+&2\left(1+\frac{2}{\beta}\right)\lambda_s \lambda \sqrt{f'_c} \\
+&\left(2+\frac{\alpha_s d}{b_o}\right)\lambda_s \lambda \sqrt{f'_c}
+\end{aligned}
+\right\}
+\end{equation}
+
+\begin{equation}
+v_s = \frac{A_v f_{yt}}{b_o s}, \qquad
+\frac{A_v}{s} \geq \frac{2\sqrt{f'_c}\,b_o}{f_{yt}}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$v_{c,\text{stud}}$ & nominal concrete stress at inner stud-reinforced critical section [psi] \\
+$A_v$ & sum of stud areas on one peripheral line [in$^2$] \\
+$f_{yt}$ & yield strength of shear studs used for design [psi] \\
+$s$ & spacing of peripheral stud lines perpendicular to column face [in] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries INNER LIMITS}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{2.4in}p{4.0in}@{}}
+Strength & $\phi(v_{c,\text{stud}} + v_s) \geq v_u$ \\
+Compression cap & $v_u \leq 8\phi\sqrt{f'_c}$ \\
+$f_{yt}$ used in $v_s$ & limited by ACI transverse reinforcement limit \\
+\end{tabular}
+}
+
+\subsection{Outer Critical Section}
+
+\begin{equation}
+v_{c,\text{out}} = 2\lambda_s\lambda\sqrt{f'_c}, \qquad
+\phi v_{c,\text{out}} \geq v_{u,\text{out}}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$v_{c,\text{out}}$ & nominal concrete stress beyond outermost stud line [psi] \\
+$v_{u,\text{out}}$ & factored stress at outer critical section using outer $A_c$, $J_c$, and $c$ [psi] \\
+\end{tabular}
+}
+
+\subsection{Stud Geometry}
+
+\begin{equation}
+h_{\text{stud}} \geq h - c_{\text{top}} - c_{\text{rail}} - \frac{d_b}{2}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$h_{\text{stud}}$ & overall height of headed shear stud assembly [in] \\
+$h$ & slab thickness [in] \\
+$c_{\text{top}}$ & concrete cover on top flexural reinforcement [in] \\
+$c_{\text{rail}}$ & concrete cover on base rail [in] \\
+$d_b$ & flexural tension reinforcement bar diameter [in] \\
+$\ell_{\text{shaft}}$ & smooth stud shaft length [in] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries PLACEMENT LIMITS}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{3.1in}p{3.3in}@{}}
+Stud orientation & perpendicular to slab plane \\
+Column face to first peripheral stud line & $\leq d/2$ \\
+Stud-line spacing, $v_u \leq 6\phi\sqrt{f'_c}$ & $s \leq 3d/4$ \\
+Stud-line spacing, $v_u > 6\phi\sqrt{f'_c}$ & $s \leq d/2$ \\
+Adjacent studs on first peripheral line & $\leq 2d$ \\
+Size-effect waiver & $\lambda_s = 1.0$ only if $\ell_{\text{shaft}}\leq10$ in and $A_v/s$ min satisfied \\
+\end{tabular}
+}
+
+\section{Strength Check}
+
+\begin{equation}
+\phi v_n \geq v_u, \qquad v_n = v_c + v_s, \qquad \phi = 0.75
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$v_n$ & nominal two-way shear stress [psi] \\
+$v_s$ & nominal two-way shear stress from shear reinforcement [psi] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries CHECK ORDER}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.3in}p{5.4in}@{}}
+1 & Set inner critical perimeter and remove ineffective portions at openings or slab edges \\
+2 & Compute $A_c$ and $J_c$ from the actual critical section geometry \\
+3 & Compute $v_u$ using direct shear plus $\gamma_v M_u c / J_c$ \\
+4 & If studs are used, check inner $v_u$ cap and design $A_v/s$ \\
+5 & Set outer critical perimeter at $d/2$ beyond the last stud line \\
+6 & Recompute outer $A_c$, $J_c$, $c$, and $v_{u,\text{out}}$ with no $v_s$ \\
+7 & Check stud geometry, first-line distance, line spacing, and stud spacing \\
+8 & Pass when all inner and outer perimeter points satisfy $\phi v_n \geq v_u$ \\
+\end{tabular}
+}
+
+\end{document}

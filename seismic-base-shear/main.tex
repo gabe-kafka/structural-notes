@@ -1,0 +1,168 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize SEISMIC-BASE-SHEAR}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Seismic Base Shear}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Required Inputs}
+
+Supply these values first; the equations below then give $V$.
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+Loads & $D$, $W_{\text{part}}$, $W_{\text{equip}}$, $L_{\text{storage}}$, $W_{\text{snow,req}}$ \\
+Hazard/site & $S_S$, $S_1$, $F_a$, $F_v$, $T_L$ \\
+System & $R$, $I_e$, $C_t$, $x$, $C_u$ \\
+Period & $h_n$, and $T_{\text{calc}}$ if using a calculated period \\
+\end{tabular}
+}
+
+{\ttfamily\footnotesize
+Order: $W \rightarrow S_{MS},S_{M1} \rightarrow S_{DS},S_{D1} \rightarrow T \rightarrow C_s \rightarrow V$.
+}
+
+\section{Symbols}
+
+{\ttfamily\footnotesize
+\renewcommand{\arraystretch}{1.02}
+\begin{tabular}{@{}p{0.85in}p{2.25in}@{\quad}p{0.95in}p{2.25in}@{}}
+$V$ & base shear &
+$C_s$ & seismic response coefficient \\
+$W$ & effective seismic weight &
+$D$ & dead load above base \\
+$W_{\text{part}}$ & required partition weight &
+$W_{\text{equip}}$ & operating equipment weight \\
+$L_{\text{storage}}$ & storage live load &
+$W_{\text{snow,req}}$ & code snow contribution \\
+$S_S$ & mapped short-period MCE acceleration &
+$S_1$ & mapped 1 s MCE acceleration \\
+$F_a$ & short-period site coefficient &
+$F_v$ & 1 s site coefficient \\
+$S_{MS}$ & site-adjusted short-period MCE acceleration &
+$S_{M1}$ & site-adjusted 1 s MCE acceleration \\
+$S_{DS}$ & design short-period acceleration &
+$S_{D1}$ & design 1 s acceleration \\
+$T$ & period used in direction considered &
+$T_a$ & approximate fundamental period \\
+$T_{\text{calc}}$ & calculated fundamental period &
+$T_L$ & long-period transition period \\
+$R$ & response modification coefficient &
+$I_e$ & seismic importance factor \\
+$C_t$ & approximate-period coefficient &
+$x$ & approximate-period exponent \\
+$h_n$ & structural height above base &
+$C_u$ & calculated-period upper-limit coefficient \\
+$C_{s,0}$ & response coefficient before bounds &
+$C_{s,\max}$ & upper bound on response coefficient \\
+$C_{s,S_1}$ & high-$S_1$ minimum response coefficient &
+$C_{s,\min}$ & lower bound on response coefficient \\
+$g$ & acceleration of gravity &
+& \\
+\end{tabular}
+}
+
+\section{Effective Seismic Weight $W$}
+
+\begin{equation}
+W = D + W_{\text{part}} + W_{\text{equip}} + 0.25L_{\text{storage}} + W_{\text{snow,req}}
+\end{equation}
+
+\section{Seismic Response Coefficient $C_s$}
+
+\subsection{Dependencies}
+
+\begin{equation}
+\begin{aligned}
+S_{MS} &= F_aS_S, &
+S_{M1} &= F_vS_1 \\
+S_{DS} &= \frac{2}{3}S_{MS}, &
+S_{D1} &= \frac{2}{3}S_{M1}
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+T_a = C_th_n^x
+\end{equation}
+
+\begin{equation}
+T =
+\begin{cases}
+T_a & \text{hand calc / approximate period} \\
+\min(T_{\text{calc}}, C_uT_a) & \text{calculated period available}
+\end{cases}
+\end{equation}
+
+\subsection{Coefficient Checks}
+
+\begin{equation}
+C_{s,0} = \frac{S_{DS}}{R/I_e}
+\end{equation}
+
+\begin{equation}
+C_{s,\max} =
+\begin{cases}
+\dfrac{S_{D1}}{T(R/I_e)} & T \leq T_L \\[6pt]
+\dfrac{S_{D1}T_L}{T^2(R/I_e)} & T > T_L
+\end{cases}
+\end{equation}
+
+\begin{equation}
+C_{s,S_1} =
+\begin{cases}
+\dfrac{0.5S_1}{R/I_e} & S_1 \geq 0.6g \\[6pt]
+0 & S_1 < 0.6g
+\end{cases}
+\end{equation}
+
+\begin{equation}
+C_{s,\min} = \max\!\left(0.044S_{DS}I_e,\ 0.01,\ C_{s,S_1}\right)
+\end{equation}
+
+\begin{equation}
+C_s = \max\!\left(C_{s,\min},\ \min(C_{s,0}, C_{s,\max})\right)
+\end{equation}
+
+{\ttfamily\footnotesize
+CONTROL: use the highest controlling $C_s$; cap $C_{s,0}$ at $C_{s,\max}$, then compare to $C_{s,\min}$.
+}
+
+\section{Seismic Base Shear $V$}
+
+ASCE 7 Eq. 12.8-1:
+\begin{equation}
+V = C_s W
+\end{equation}
+
+\end{document}

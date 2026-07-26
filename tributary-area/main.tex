@@ -1,0 +1,317 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{tikz}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{2pt}{0pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize TRIBUTARY-AREA}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\tikzset{
+slab/.style={draw=black, line width=0.6pt, fill=black!3},
+support/.style={draw=black, line width=0.6pt, fill=black!42},
+wall/.style={draw=black, line width=0.6pt, fill=black!55},
+stress/.style={draw=black, line width=0.45pt, densely dashed},
+stresslabel/.style={midway, fill=black!3, inner sep=0.8pt, font=\ttfamily\scriptsize\bfseries},
+connect/.style={circle, draw=black, fill=white, line width=0.45pt, inner sep=1.35pt},
+centroid/.style={circle, draw=black, fill=black, line width=0.45pt, inner sep=1.45pt},
+areaedge/.style={draw=black, line width=0.55pt}
+}
+
+\newcommand{\stressLine}[2]{\draw[stress] #1 -- node[stresslabel] {S} #2;}
+\newcommand{\areaConnect}[2]{\draw[areaedge] #1 -- #2;}
+\newcommand{\taFill}[2]{%
+\path[draw=black, fill=#1!70, fill opacity=0.27, draw opacity=0.85, line width=0.35pt]
+  #2 -- cycle;
+}
+
+\newcommand{\drawSlab}{%
+\draw[slab] (0,0) rectangle (9,5.35);
+}
+
+\newcommand{\drawSupports}{%
+\draw[support] (0.85,0.00) rectangle (1.25,0.40);
+\draw[support] (5.05,0.00) rectangle (5.45,0.40);
+\draw[support] (7.85,0.00) rectangle (8.25,0.40);
+\draw[support] (0.00,3.65) rectangle (0.40,4.05);
+\draw[support] (4.10,4.95) rectangle (4.50,5.35);
+\draw[support] (8.60,3.35) rectangle (9.00,3.75);
+\draw[support] (4.15,1.05) rectangle (4.55,1.45);
+\draw[wall] (2.35,2.20) -- (6.20,2.20) -- (6.20,4.20) -- (5.83,4.20) --
+            (5.83,2.57) -- (2.72,2.57) -- (2.72,4.20) -- (2.35,4.20) -- cycle;
+}
+
+\input{stress-lines.generated.tex}
+
+\newcommand{\drawPolygonCentroids}{%
+\foreach \p in {
+(1.805,4.784),(7.090,4.706),(1.464,3.991),(7.188,3.782),
+(4.277,3.610),(1.630,3.293),(7.103,3.091),(4.319,1.912),
+(0.853,1.806),(8.021,1.750),(2.670,1.431),(6.099,1.424),
+(3.183,0.967),(5.747,0.764),(3.357,0.407),(6.650,0.200)
+}{\node[centroid] at \p {};}
+}
+
+\newcommand{\drawEdgePoints}{%
+\foreach \p in {
+(1.400,5.350),
+(7.550,5.350),
+(0.000,1.400),
+(9.000,1.300),
+(3.150,0.000),
+(6.650,0.000)
+}{\node[connect] at \p {};}
+}
+
+\newcommand{\drawAreaConnections}{%
+\areaConnect{(1.805,4.784)}{(1.400,5.350)}
+\areaConnect{(1.805,4.784)}{(3.410,4.575)}
+\areaConnect{(1.805,4.784)}{(1.375,4.125)}
+\areaConnect{(7.090,4.706)}{(7.550,5.350)}
+\areaConnect{(7.090,4.706)}{(5.165,4.575)}
+\areaConnect{(7.090,4.706)}{(7.400,3.975)}
+\areaConnect{(1.464,3.991)}{(1.375,4.125)}
+\areaConnect{(1.464,3.991)}{(1.375,3.850)}
+\areaConnect{(7.188,3.782)}{(7.400,3.975)}
+\areaConnect{(7.188,3.782)}{(7.400,3.550)}
+\areaConnect{(4.277,3.610)}{(3.410,4.575)}
+\areaConnect{(4.277,3.610)}{(5.165,4.575)}
+\areaConnect{(1.630,3.293)}{(1.375,3.850)}
+\areaConnect{(1.630,3.293)}{(1.375,2.925)}
+\areaConnect{(7.103,3.091)}{(7.400,3.550)}
+\areaConnect{(7.103,3.091)}{(7.400,2.775)}
+\areaConnect{(4.319,1.912)}{(3.671,1.825)}
+\areaConnect{(4.319,1.912)}{(4.979,1.825)}
+\areaConnect{(0.853,1.806)}{(1.375,2.925)}
+\areaConnect{(0.853,1.806)}{(0.000,1.400)}
+\areaConnect{(0.853,1.806)}{(1.800,1.300)}
+\areaConnect{(8.021,1.750)}{(7.400,2.775)}
+\areaConnect{(8.021,1.750)}{(9.000,1.300)}
+\areaConnect{(8.021,1.750)}{(7.025,1.300)}
+\areaConnect{(2.670,1.431)}{(3.671,1.825)}
+\areaConnect{(2.670,1.431)}{(1.800,1.300)}
+\areaConnect{(2.670,1.431)}{(2.700,0.925)}
+\areaConnect{(6.099,1.424)}{(4.979,1.825)}
+\areaConnect{(6.099,1.424)}{(7.025,1.300)}
+\areaConnect{(6.099,1.424)}{(6.200,0.925)}
+\areaConnect{(3.183,0.967)}{(2.700,0.925)}
+\areaConnect{(3.183,0.967)}{(2.700,0.725)}
+\areaConnect{(5.747,0.764)}{(6.200,0.925)}
+\areaConnect{(5.747,0.764)}{(4.800,0.725)}
+\areaConnect{(5.747,0.764)}{(6.650,0.400)}
+\areaConnect{(3.357,0.407)}{(2.700,0.725)}
+\areaConnect{(3.357,0.407)}{(4.800,0.725)}
+\areaConnect{(3.357,0.407)}{(3.150,0.000)}
+\areaConnect{(6.650,0.200)}{(6.650,0.400)}
+\areaConnect{(6.650,0.200)}{(6.650,0.000)}
+}
+
+\newcommand{\drawTributaryAreas}{%
+\taFill{magenta}{(4.500,5.350) -- (7.550,5.350) -- (7.090,4.706) -- (5.165,4.575) -- (4.277,3.610) -- (3.410,4.575) -- (1.805,4.784) -- (1.400,5.350) -- (4.100,5.350) -- (4.100,4.950) -- (4.500,4.950)}
+\taFill{blue}{(0.000,4.050) -- (0.000,5.350) -- (1.400,5.350) -- (1.805,4.784) -- (1.375,4.125) -- (1.464,3.991) -- (1.375,3.850) -- (1.630,3.293) -- (1.375,2.925) -- (0.853,1.806) -- (0.000,1.400) -- (0.000,3.650) -- (0.400,3.650) -- (0.400,4.050)}
+\taFill{cyan}{(9.000,3.350) -- (9.000,1.300) -- (8.021,1.750) -- (7.400,2.775) -- (7.103,3.091) -- (7.400,3.550) -- (7.188,3.782) -- (7.400,3.975) -- (7.090,4.706) -- (7.550,5.350) -- (9.000,5.350) -- (9.000,3.750) -- (8.600,3.750) -- (8.600,3.350)}
+\taFill{red}{(8.021,1.750) -- (7.025,1.300) -- (6.099,1.424) -- (4.979,1.825) -- (4.319,1.912) -- (3.671,1.825) -- (2.670,1.431) -- (1.800,1.300) -- (0.853,1.806) -- (1.375,2.925) -- (1.630,3.293) -- (1.375,3.850) -- (1.464,3.991) -- (1.375,4.125) -- (1.805,4.784) -- (3.410,4.575) -- (4.277,3.610) -- (5.165,4.575) -- (7.090,4.706) -- (7.400,3.975) -- (7.188,3.782) -- (7.400,3.550) -- (7.103,3.091) -- (7.400,2.775)}
+\taFill{purple}{(3.357,0.407) -- (2.700,0.725) -- (3.183,0.967) -- (2.700,0.925) -- (2.670,1.431) -- (3.671,1.825) -- (4.319,1.912) -- (4.979,1.825) -- (6.099,1.424) -- (6.200,0.925) -- (5.747,0.764) -- (4.800,0.725)}
+\taFill{green}{(9.000,1.300) -- (9.000,0.000) -- (8.250,0.000) -- (8.250,0.400) -- (7.850,0.400) -- (7.850,0.000) -- (6.650,0.000) -- (6.650,0.200) -- (6.650,0.400) -- (5.747,0.764) -- (6.200,0.925) -- (6.099,1.424) -- (7.025,1.300) -- (8.021,1.750)}
+\taFill{orange}{(0.850,0.000) -- (0.000,0.000) -- (0.000,1.400) -- (0.853,1.806) -- (1.800,1.300) -- (2.670,1.431) -- (2.700,0.925) -- (3.183,0.967) -- (2.700,0.725) -- (3.357,0.407) -- (3.150,0.000) -- (1.250,0.000) -- (1.250,0.400) -- (0.850,0.400)}
+\taFill{yellow}{(5.050,0.000) -- (3.150,0.000) -- (3.357,0.407) -- (4.800,0.725) -- (5.747,0.764) -- (6.650,0.400) -- (6.650,0.200) -- (6.650,0.000) -- (5.450,0.000) -- (5.450,0.400) -- (5.050,0.400)}
+}
+
+\newcommand{\tributaryDiagram}[1]{%
+\par\noindent\hfill
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+#1
+\drawSupports
+\end{tikzpicture}
+\hfill\null\par
+}
+
+\newcommand{\tributaryNodeDiagram}{%
+\par\noindent\hfill
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+\drawStressLines
+\drawSupports
+\drawPolygonCentroids
+\end{tikzpicture}
+\hfill\null\par
+}
+
+\newcommand{\tributaryConnectionDiagram}{%
+\par\noindent\hfill
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+\drawStressLines
+\drawSupports
+\drawAreaConnections
+\drawPolygonCentroids
+\end{tikzpicture}
+\hfill\null\par
+}
+
+\newcommand{\tributaryEdgePointDiagram}{%
+\par\noindent\hfill
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+\drawStressLines
+\drawSupports
+\drawEdgePoints
+\drawPolygonCentroids
+\end{tikzpicture}
+\hfill\null\par
+}
+
+\newcommand{\tributaryAreaDiagram}{%
+\par\noindent\hfill
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+\drawTributaryAreas
+\drawStressLines
+\drawSupports
+\end{tikzpicture}
+\hfill\null\par
+}
+
+\newcommand{\tributaryPicture}[1]{%
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+#1
+\drawSupports
+\end{tikzpicture}%
+}
+
+\newcommand{\tributaryNodePicture}{%
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+\drawStressLines
+\drawSupports
+\drawPolygonCentroids
+\end{tikzpicture}%
+}
+
+\newcommand{\tributaryEdgePointPicture}{%
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+\drawStressLines
+\drawSupports
+\drawEdgePoints
+\drawPolygonCentroids
+\end{tikzpicture}%
+}
+
+\newcommand{\tributaryAreaPicture}{%
+\begin{tikzpicture}[x=0.255in,y=0.255in]
+\drawSlab
+\drawTributaryAreas
+\drawStressLines
+\drawSupports
+\end{tikzpicture}%
+}
+
+\newcommand{\logicBlock}[1]{%
+{\raggedright\scriptsize\hyphenpenalty=10000\exhyphenpenalty=10000 #1\par}%
+}
+
+\newcommand{\logicStress}{%
+\logicBlock{%
+Let \(\Omega\) be the slab plan and \(B\) the support faces.
+Stress lines connect support-to-support only:
+\[
+L=\{\ell_k:\partial\ell_k\subset\partial B\}
+\]
+Endpoints are wall/column edges or corners.%
+}%
+}
+
+\newcommand{\logicCentroid}{%
+\logicBlock{%
+Stress-line cells:
+\[
+\{P_i\}=\operatorname{faces}\bigl(\Omega\setminus(B\cup L)\bigr)
+\]
+Cell centroid:
+\[
+A_i=\int_{P_i}dA,\quad
+c_i=\frac{1}{A_i}\int_{P_i}(x,y)\,dA
+\]%
+}%
+}
+
+\newcommand{\logicEdgePoint}{%
+\logicBlock{%
+Boundary node on an exposed perimeter run between supports:
+\[
+e_j=\gamma_j(\ell_j/2),\quad
+\ell_j=\int_{\gamma_j}ds
+\]
+If the run turns a slab corner, keep measuring around the corner;
+place \(e_j\) at the run midpoint between support faces.%
+}%
+}
+
+\newcommand{\logicArea}{%
+\logicBlock{%
+Use exposed stress-line midpoints \(s_k\), centroids \(c_i\), and
+boundary nodes \(e_j\):
+\[
+G=\{c_i\leftrightarrow s_k,\;c_i\leftrightarrow e_j\}
+\]
+Tributary areas:
+\[
+\{T_m\}=\operatorname{faces}\bigl(\Omega\setminus(B\cup G)\bigr)
+\]%
+}%
+}
+
+\newcommand{\stepBlock}[3]{%
+\par\vspace{0pt}
+\noindent\rule{\textwidth}{0.45pt}\par\vspace{1pt}
+\section{#1}
+\noindent
+\begin{minipage}[t]{0.62\textwidth}
+\vspace{0pt}\centering #2
+\end{minipage}\hfill
+\begin{minipage}[t]{0.30\textwidth}
+\vspace{0pt}#3
+\end{minipage}\par\vspace{0pt}%
+}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Tributary Area}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{3pt}\hrule\vspace{4pt}
+
+\stepBlock{Draw Stress Line}{\tributaryPicture{\drawStressLines}}{\logicStress}
+
+\stepBlock{Stress Line Bounded Polygon Centroid Add}{\tributaryNodePicture}{\logicCentroid}
+
+\stepBlock{Edge Point Add}{\tributaryEdgePointPicture}{\logicEdgePoint}
+
+\stepBlock{Draw Tributary Area}{\tributaryAreaPicture}{\logicArea}
+
+\end{document}

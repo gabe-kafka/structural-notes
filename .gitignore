@@ -7,3 +7,7 @@
 *.synctex.gz
 build.log
 .DS_Store
+references/*.pdf
+node_modules/
+dist/
+.vercel/

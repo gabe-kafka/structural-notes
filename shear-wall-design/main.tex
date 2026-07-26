@@ -1,0 +1,312 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize SHEAR-WALL-DESIGN}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Shear Wall Design --- $M_x$ / $M_y$ Strength}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Required Inputs}
+
+Model the wall section in plan with concrete fibers and actual boundary-zone bar locations.
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.6in}p{5.1in}@{}}
+Concrete & wall polygon vertices $(x_p,y_p)$ and net concrete fibers $(A_{c,i},x_i,y_i)$ \\
+Steel & boundary-zone and distributed bars $(A_{s,j},x_j,y_j)$ \\
+Origin & analysis-model pier origin $(x_o,y_o)$ used for $M_x$ and $M_y$ \\
+Materials & $f'_c$, $\beta_1$, $\varepsilon_{cu}$, $E_s$, $f_y$ \\
+Loads & factored axial load $P_u$ and signed demands $M_{ux}$, $M_{uy}$ \\
+\end{tabular}
+}
+
+{\ttfamily\footnotesize
+Order: choose axis/sign $\rightarrow$ apply $P_u$ $\rightarrow$ solve neutral axis depth $c$ $\rightarrow$ recover signed $M_x$ or $M_y$.
+}
+
+\section{Coordinate Sign Convention}
+
+Compression force is positive. Moments are about the selected pier origin:
+\begin{equation}
+M_x = F(y-y_o), \qquad M_y = -F(x-x_o)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$M_x$ & moment about the $x$ axis [lb-in] \\
+$F$ & vertical force in one fiber or bar, positive in compression [lb] \\
+$y$ & $y$ coordinate of force $F$ [in] \\
+$y_o$ & $y$ coordinate of pier origin [in] \\
+$M_y$ & moment about the $y$ axis [lb-in] \\
+$x$ & $x$ coordinate of force $F$ [in] \\
+$x_o$ & $x$ coordinate of pier origin [in] \\
+\end{tabular}
+}
+
+\section{Axis Run}
+
+Use a unit normal vector pointing toward the compression edge. Run both signs for each axis.
+\begin{equation}
+\mathbf n =
+\begin{cases}
+(0,1)\ \text{or}\ (0,-1) & \text{for } M_x \\
+(1,0)\ \text{or}\ (-1,0) & \text{for } M_y
+\end{cases}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\mathbf n$ & neutral-axis normal vector toward compression edge \\
+\end{tabular}
+}
+
+\begin{equation}
+\begin{aligned}
+r_{\max} &= \max_p(n_x x_p+n_y y_p) \\
+d_i &= r_{\max}-(n_x x_i+n_y y_i), \qquad
+d_j = r_{\max}-(n_x x_j+n_y y_j)
+\end{aligned}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$r_{\max}$ & extreme compression-edge coordinate along $\mathbf n$ [in] \\
+$p$ & wall polygon vertex index \\
+$n_x$ & $x$ component of $\mathbf n$ \\
+$x_p$ & $x$ coordinate of wall polygon vertex $p$ [in] \\
+$n_y$ & $y$ component of $\mathbf n$ \\
+$y_p$ & $y$ coordinate of wall polygon vertex $p$ [in] \\
+$d_i$ & distance from compression edge to concrete fiber $i$ [in] \\
+$i$ & concrete fiber index \\
+$x_i$ & $x$ coordinate of concrete fiber $i$ [in] \\
+$y_i$ & $y$ coordinate of concrete fiber $i$ [in] \\
+$d_j$ & distance from compression edge to steel bar $j$ [in] \\
+$j$ & steel bar index \\
+$x_j$ & $x$ coordinate of steel bar $j$ [in] \\
+$y_j$ & $y$ coordinate of steel bar $j$ [in] \\
+\end{tabular}
+}
+
+\section{Fiber Forces}
+
+\begin{equation}
+a = \beta_1 c
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$a$ & equivalent rectangular compression block depth [in] \\
+$\beta_1$ & ACI stress-block depth factor \\
+$c$ & neutral-axis depth from extreme compression edge [in] \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{c,i} =
+\begin{cases}
+0.85 f'_c A_{c,i} & 0 \leq d_i \leq a \\
+0 & d_i > a
+\end{cases}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{c,i}$ & concrete compression force in fiber $i$ [lb] \\
+$f'_c$ & specified concrete compressive strength [psi] \\
+$A_{c,i}$ & net concrete area of fiber $i$, excluding steel area [in$^2$] \\
+\end{tabular}
+}
+
+\begin{equation}
+\varepsilon_{s,j} = \varepsilon_{cu}\left(1-\frac{d_j}{c}\right)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\varepsilon_{s,j}$ & strain in steel bar $j$, compression positive \\
+$\varepsilon_{cu}$ & ultimate concrete compression strain \\
+\end{tabular}
+}
+
+\begin{equation}
+f_{s,j} = \min\!\left(f_y,\ \max(-f_y,\ E_s\varepsilon_{s,j})\right)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$f_{s,j}$ & stress in steel bar $j$, compression positive [psi] \\
+$f_y$ & yield strength of longitudinal reinforcement [psi] \\
+$E_s$ & modulus of elasticity of steel [psi] \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{s,j} = f_{s,j} A_{s,j}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{s,j}$ & force in steel bar $j$, compression positive [lb] \\
+$A_{s,j}$ & area of steel bar $j$ [in$^2$] \\
+\end{tabular}
+}
+
+\section{Axial Load Sets Neutral Axis}
+
+$P_u$ is in the neutral-axis solve; moment strength is recovered after axial equilibrium is satisfied.
+
+\begin{equation}
+P_n(c,\mathbf n) = \sum_i F_{c,i}+\sum_j F_{s,j}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$P_n$ & nominal axial strength for selected $c$ and $\mathbf n$ [lb] \\
+\end{tabular}
+}
+
+\begin{equation}
+\varepsilon_t = \max\!\left(0,\ \max_j(-\varepsilon_{s,j})\right), \qquad
+\varepsilon_y = \frac{f_y}{E_s}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\varepsilon_t$ & largest tensile strain in steel, reported positive \\
+$\varepsilon_y$ & steel yield strain \\
+\end{tabular}
+}
+
+\begin{equation}
+\phi =
+\begin{cases}
+0.65 & \varepsilon_t \leq \varepsilon_y \\
+0.65 + 0.25\dfrac{\varepsilon_t-\varepsilon_y}{0.005-\varepsilon_y} &
+\varepsilon_y < \varepsilon_t < 0.005 \\
+0.90 & \varepsilon_t \geq 0.005
+\end{cases}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\phi$ & strength reduction factor for tied wall boundary reinforcement \\
+\end{tabular}
+}
+
+\begin{equation}
+R_P(c,\mathbf n)=\phi(c)P_n(c,\mathbf n)-P_u=0
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$R_P$ & axial residual for neutral-axis iteration [lb] \\
+$P_u$ & factored axial load, compression positive [lb] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries CONTROL}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.8in}p{4.9in}@{}}
+Compression $P_u>0$ & generally increases $c$ and shifts N.A. toward the tension side \\
+Tension $P_u<0$ & generally decreases $c$ and shifts N.A. toward the compression side \\
+No $R_P=0$ solution & axial demand outside available section strength for that axis run \\
+\end{tabular}
+}
+
+\section{Moment Strength}
+
+\begin{equation}
+M_{nx}(c,\mathbf n) =
+\sum_i F_{c,i}(y_i-y_o)+\sum_j F_{s,j}(y_j-y_o)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$M_{nx}$ & nominal moment strength about $x$ axis for selected axis run [lb-in] \\
+\end{tabular}
+}
+
+\begin{equation}
+M_{ny}(c,\mathbf n) =
+-\sum_i F_{c,i}(x_i-x_o)-\sum_j F_{s,j}(x_j-x_o)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$M_{ny}$ & nominal moment strength about $y$ axis for selected axis run [lb-in] \\
+\end{tabular}
+}
+
+\begin{equation}
+M_{\phi x} = \phi M_{nx}, \qquad M_{\phi y} = \phi M_{ny}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$M_{\phi x}$ & signed design moment strength about $x$ axis [lb-in] \\
+$M_{\phi y}$ & signed design moment strength about $y$ axis [lb-in] \\
+\end{tabular}
+}
+
+\section{Strength Check}
+
+Check the matching axis and sign.
+\begin{equation}
+|M_{\phi x}^{\pm}| \geq |M_{ux}^{\pm}|, \qquad
+|M_{\phi y}^{\pm}| \geq |M_{uy}^{\pm}|
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$M_{\phi x}^{\pm}$ & design $x$-axis strength for matching positive or negative demand [lb-in] \\
+$M_{ux}^{\pm}$ & factored $x$-axis moment demand, positive or negative [lb-in] \\
+$M_{\phi y}^{\pm}$ & design $y$-axis strength for matching positive or negative demand [lb-in] \\
+$M_{uy}^{\pm}$ & factored $y$-axis moment demand, positive or negative [lb-in] \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries CHECK ORDER}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{0.35in}p{6.35in}@{}}
+1 & Use the same $(x_o,y_o)$ and sign convention as the analysis model. \\
+2 & Mesh the actual wall shape; L and U walls do not need rectangular simplification. \\
+3 & Place boundary-zone bars at actual $(x_j,y_j)$ coordinates. \\
+4 & Run $M_x^+$, $M_x^-$, $M_y^+$, and $M_y^-$ separately. \\
+5 & For each run, iterate $c$ until $R_P=0$ using the factored axial load $P_u$. \\
+6 & Compute signed $M_{\phi x}$ or $M_{\phi y}$ and compare only to the matching demand sign. \\
+\end{tabular}
+}
+
+\end{document}
