@@ -1,0 +1,314 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize CM-CR}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{CM-CR}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Required Inputs}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{1.55in}p{5.15in}@{}}
+Wall geometry & wall center coordinates $(x_i,y_i)$, length $L_i$, height $h_i$, thickness $t_i$ \\
+Wall weight & wall or tributary story weight $W_i$ for each wall segment \\
+Material & elastic modulus $E_i$ for each wall segment \\
+Loads & base shears $F_{P,x}$, $F_{P,y}$ and torsions $T_x^+$, $T_x^-$, $T_y^+$, $T_y^-$ \\
+\end{tabular}
+}
+
+{\ttfamily\footnotesize
+Order: CM $\rightarrow$ relative rigidity $\rightarrow$ CR $\rightarrow$ torsion property $\rightarrow$ wall forces.
+}
+
+\section{S1 Center of Mass}
+
+Compute wall weight takeoff first; then sum weight moments.
+
+\begin{equation}
+xW_i = x_i W_i, \qquad yW_i = y_i W_i
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$i$ & wall segment index \\
+$xW_i$ & $x$-coordinate weight moment for wall segment $i$ \\
+$x_i$ & $x$ coordinate of wall segment $i$ \\
+$W_i$ & wall or tributary story weight for wall segment $i$ \\
+$yW_i$ & $y$-coordinate weight moment for wall segment $i$ \\
+$y_i$ & $y$ coordinate of wall segment $i$ \\
+\end{tabular}
+}
+
+\begin{equation}
+x_1 = \frac{\sum_i xW_i}{\sum_i W_i}, \qquad
+y_1 = \frac{\sum_i yW_i}{\sum_i W_i}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$x_1$ & center of mass $x$ coordinate \\
+$y_1$ & center of mass $y$ coordinate \\
+\end{tabular}
+}
+
+\section{S2 Relative Rigidity}
+
+Use the same trial lateral force for each wall.
+
+\begin{equation}
+\Delta_i =
+\frac{4P(h_i/L_i)^3}{E_i t_i}
++ \frac{3P(h_i/L_i)}{E_i t_i},
+\qquad
+P = 1{,}000{,}000\ \text{lb}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\Delta_i$ & lateral deflection of wall segment $i$ under trial force $P$ \\
+$P$ & trial lateral force used for relative rigidity \\
+$h_i$ & wall height for wall segment $i$ \\
+$L_i$ & wall length for wall segment $i$ \\
+$E_i$ & elastic modulus for wall segment $i$ \\
+$t_i$ & wall thickness for wall segment $i$ \\
+\end{tabular}
+}
+
+\begin{equation}
+R_i = \frac{1}{\Delta_i}, \qquad
+R_{x,i}=R_i\ (i\in X), \qquad
+R_{y,i}=R_i\ (i\in Y)
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$R_i$ & relative rigidity of wall segment $i$ \\
+$R_{x,i}$ & relative rigidity for an $X$-wall segment \\
+$R_{y,i}$ & relative rigidity for a $Y$-wall segment \\
+$X$ & wall set used with $R_x$ and E-W force distribution \\
+$Y$ & wall set used with $R_y$ and N-S force distribution \\
+\end{tabular}
+}
+
+\begin{equation}
+\Sigma R_x = \sum_{i\in X} R_{x,i}, \qquad
+\Sigma R_y = \sum_{i\in Y} R_{y,i}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$\Sigma R_x$ & total relative rigidity in the $x$ direction \\
+$\Sigma R_y$ & total relative rigidity in the $y$ direction \\
+\end{tabular}
+}
+
+\section{S3 Center of Rigidity}
+
+\begin{equation}
+xR_{y,i}=x_i R_{y,i}, \qquad
+yR_{x,i}=y_i R_{x,i}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$xR_{y,i}$ & $x$-coordinate rigidity moment for $Y$-wall segment $i$ \\
+$yR_{x,i}$ & $y$-coordinate rigidity moment for $X$-wall segment $i$ \\
+\end{tabular}
+}
+
+\begin{equation}
+x_r = \frac{\sum_{i\in Y} xR_{y,i}}{\Sigma R_y}, \qquad
+y_r = \frac{\sum_{i\in X} yR_{x,i}}{\Sigma R_x}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$x_r$ & center of rigidity $x$ coordinate \\
+$y_r$ & center of rigidity $y$ coordinate \\
+\end{tabular}
+}
+
+\section{S4 Torsional Properties}
+
+\begin{equation}
+d_{x,i}=x_i-x_r, \qquad d_{y,i}=y_i-y_r
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$d_{x,i}$ & $x$ distance from wall segment $i$ to center of rigidity \\
+$d_{y,i}$ & $y$ distance from wall segment $i$ to center of rigidity \\
+\end{tabular}
+}
+
+\begin{equation}
+RD_{y,i}=R_{y,i}d_{x,i}, \qquad
+RD_{x,i}=R_{x,i}d_{y,i}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$RD_{y,i}$ & torsional force coefficient for $Y$-wall segment $i$ \\
+$RD_{x,i}$ & torsional force coefficient for $X$-wall segment $i$ \\
+\end{tabular}
+}
+
+\begin{equation}
+J_R =
+\sum_{i\in Y} R_{y,i} d_{x,i}^2
++ \sum_{i\in X} R_{x,i} d_{y,i}^2
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$J_R$ & total torsional rigidity term, equal to $\Sigma(RD^2)$ \\
+\end{tabular}
+}
+
+\section{S5A N-S EQ Forces}
+
+For N-S force distribution, use $Y$-walls and $R_y$.
+
+\begin{equation}
+F_{v,y,i}=\frac{R_{y,i}}{\Sigma R_y}F_{P,y}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{v,y,i}$ & direct shear force in $Y$-wall segment $i$ \\
+$F_{P,y}$ & N-S base shear \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{t,y,i}^{+}=\frac{RD_{y,i}}{J_R}T_y^+, \qquad
+F_{t,y,i}^{-}=\frac{RD_{y,i}}{J_R}T_y^-
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{t,y,i}^{+}$ & torsional force in $Y$-wall segment $i$ from $T_y^+$ \\
+$T_y^+$ & positive N-S torsion \\
+$F_{t,y,i}^{-}$ & torsional force in $Y$-wall segment $i$ from $T_y^-$ \\
+$T_y^-$ & negative N-S torsion \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{1,y,i}=F_{v,y,i}+F_{t,y,i}^{+}, \qquad
+F_{2,y,i}=F_{v,y,i}+F_{t,y,i}^{-}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{1,y,i}$ & total N-S force in $Y$-wall segment $i$ using $T_y^+$ \\
+$F_{2,y,i}$ & total N-S force in $Y$-wall segment $i$ using $T_y^-$ \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{\text{design},y,i}=\max(F_{1,y,i},F_{2,y,i})
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{\text{design},y,i}$ & N-S design force in $Y$-wall segment $i$ \\
+\end{tabular}
+}
+
+\section{S5B E-W EQ Forces}
+
+Mirror S5A for E-W force distribution: use $X$-walls and $R_x$.
+
+\begin{equation}
+F_{v,x,i}=\frac{R_{x,i}}{\Sigma R_x}F_{P,x}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{v,x,i}$ & direct shear force in $X$-wall segment $i$ \\
+$F_{P,x}$ & E-W base shear \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{t,x,i}^{+}=\frac{RD_{x,i}}{J_R}T_x^+, \qquad
+F_{t,x,i}^{-}=\frac{RD_{x,i}}{J_R}T_x^-
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{t,x,i}^{+}$ & torsional force in $X$-wall segment $i$ from $T_x^+$ \\
+$T_x^+$ & positive E-W torsion \\
+$F_{t,x,i}^{-}$ & torsional force in $X$-wall segment $i$ from $T_x^-$ \\
+$T_x^-$ & negative E-W torsion \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{1,x,i}=F_{v,x,i}+F_{t,x,i}^{+}, \qquad
+F_{2,x,i}=F_{v,x,i}+F_{t,x,i}^{-}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{1,x,i}$ & total E-W force in $X$-wall segment $i$ using $T_x^+$ \\
+$F_{2,x,i}$ & total E-W force in $X$-wall segment $i$ using $T_x^-$ \\
+\end{tabular}
+}
+
+\begin{equation}
+F_{\text{design},x,i}=\max(F_{1,x,i},F_{2,x,i})
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$F_{\text{design},x,i}$ & E-W design force in $X$-wall segment $i$ \\
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries CHECK ORDER}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}p{0.35in}p{6.35in}@{}}
+1 & Compute $W_i$, $xW_i$, $yW_i$, then $x_1$ and $y_1$. \\
+2 & Compute $\Delta_i$ and $R_i$ for each wall; split into $R_{x,i}$ and $R_{y,i}$ wall sets. \\
+3 & Compute $x_r$ from $Y$-walls and $y_r$ from $X$-walls. \\
+4 & Compute $d_{x,i}$, $d_{y,i}$, $RD_{x,i}$, $RD_{y,i}$, and $J_R=\Sigma(RD^2)$. \\
+5 & Distribute $F_{P,y}$ to $Y$-walls with $T_y^+$ and $T_y^-$. \\
+6 & Mirror for $F_{P,x}$ to $X$-walls with $T_x^+$ and $T_x^-$. \\
+\end{tabular}
+}
+
+\end{document}
