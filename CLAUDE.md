@@ -8,7 +8,7 @@ Follow this loop every time Gabe opens the repo to start a new note.
 
 1. **Scaffold the folder.** `cp -R template/ <slug>/` (kebab-case, e.g. `concrete-column-design`). Open `<slug>/main.tex` and substitute `<DOC-ID>` with the slug in UPPERCASE and `<NOTE TITLE>` with the subject Gabe gives.
 2. **Get section names from Gabe.** Ask what sections go in if not already stated. Add only those section headers in order, bodies empty. No subsections, no placeholder prose.
-3. **Compile + open on every change.** From the note folder: `pdflatex main.tex` then `open main.pdf`. Do this after each edit so Gabe sees the live result.
+3. **Compile on every change.** From the note folder: `pdflatex main.tex`. Do not launch macOS Preview; Codex displays the rebuilt PDF in-app.
 4. **Fill content only when prompted.** When Gabe states an equation or concept:
    - Equation in `\begin{equation}...\end{equation}`.
    - Immediately followed by a mono legend tabular (`{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}} ... \end{tabular}}`) defining **only new** variables — don't re-define anything already in the doc.
