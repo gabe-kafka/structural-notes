@@ -1,0 +1,108 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize PE-CRITICAL-MEMORIZE}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{PE Critical Memorize}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Beam Shear Stress}
+
+\begin{equation}
+v=\frac{VQ}{IB}
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$v$ & shear stress at evaluation point \\
+$V$ & internal shear force \\
+$Q$ & first moment of area about neutral axis \\
+$I$ & second moment of area about neutral axis \\
+$B$ & width at evaluation point \\
+\end{tabular}
+}
+
+\section{Concrete Types}
+
+{\ttfamily\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|p{0.7in}|p{5.75in}|}
+\hline
+\bfseries TYPE & \bfseries USE \\ \hline
+I & General purpose \\ \hline
+II & Moderate sulfate resistance; moderate heat \\ \hline
+III & Early strength \\ \hline
+IV & Low heat \\ \hline
+V & High sulfate resistance \\ \hline
+\end{tabular}
+}
+
+\section{Standard Penetration Test (SPT)}
+
+{\ttfamily\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|p{0.9in}|p{5.55in}|}
+\hline
+\bfseries ITEM & \bfseries NOTE \\ \hline
+Purpose & Indirect estimate of relative density, $D_r$ \\ \hline
+Seat & Drive first 6 in \\ \hline
+Count & Blows required to drive next 12 in \\ \hline
+\end{tabular}
+}
+
+\medskip{\ttfamily\footnotesize\bfseries EXAMPLE}
+
+{\ttfamily\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|p{1.2in}|p{0.75in}|p{4.4in}|}
+\hline
+\bfseries DRIVE & \bfseries BLOWS & \bfseries USE \\ \hline
+First 6 in & 5 & Seating; exclude \\ \hline
+Next 6 in & 7 & Include \\ \hline
+Final 6 in & 9 & Include \\ \hline
+\end{tabular}
+}
+
+\begin{equation}
+N=7+9=16
+\end{equation}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$N$ & SPT blow count for final 12 in [blows/ft] \\
+\end{tabular}
+}
+
+\end{document}
