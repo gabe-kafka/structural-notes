@@ -159,6 +159,32 @@ legend {
   border-bottom-color: #9c2d2d;
 }
 
+.field input.auto {
+  border-bottom-style: dotted;
+  color: #34312d;
+  cursor: default;
+}
+
+.field select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid #9c978d;
+  border-radius: 0;
+  background: transparent;
+  color: #151515;
+  font: inherit;
+  font-size: 0.76rem;
+  padding: 0.12rem 0 0.08rem;
+  cursor: pointer;
+}
+
+.select-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: #6f6a61;
+}
+
 .field-help {
   display: none;
   color: #6f6a61;
@@ -354,6 +380,35 @@ legend {
 
 .final-output em {
   font-style: normal;
+}
+
+.spectrum {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.3rem;
+  font-family: inherit;
+}
+
+.spectrum-empty {
+  margin-top: 0.3rem;
+  color: #6f6a61;
+}
+
+.code-notes {
+  margin-top: 0.3rem;
+  color: #8a6a1f;
+}
+
+.code-notes p {
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+.print-text {
+  text-transform: uppercase;
+  font-size: 0.72em;
+  letter-spacing: 0.03em;
 }
 
 .status {

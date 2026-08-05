@@ -1,0 +1,131 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize TIGHT-TIMING-BINARY}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Tight Timing Binary}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{xyz:PLTR Earnings}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+MARKET & xyz:PLTR \\
+EVENT & published PLTR earnings-call start \\
+ENTRY & immediately before the published event time \\
+STOP & trigger 2.5\% against the position \\
+TARGET & 5.0\% with the position \\
+WIN RATE & 50\% \\
+PRICING & external 24/5; internal otherwise \\
+VENUE LIMITS & 10x max leverage; $\pm 10\%$ discovery bound
+\end{tabular}}
+
+The weekday earnings window has continuous external pricing, including
+post-market and overnight sessions. This reduces closure-gap risk. The stop
+still executes against the event-time order book.
+
+\begin{equation}
+  E_{\mathrm{PLTR}}
+  =0.50W_{\mathrm{PLTR}}-0.50L_{\mathrm{PLTR}}
+  =\frac{1}{2}\left(W_{\mathrm{PLTR}}-L_{\mathrm{PLTR}}\right)
+\end{equation}
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$E_{\mathrm{PLTR}}$ & expected net return per PLTR earnings trade \\
+$W_{\mathrm{PLTR}}$ & average realized net return on winning PLTR trades \\
+$L_{\mathrm{PLTR}}$ & average realized net loss on losing PLTR trades
+\end{tabular}}
+
+Target case:
+\begin{equation}
+  W_{\mathrm{PLTR}}=5.0\%,\quad L_{\mathrm{PLTR}}=2.5\%
+  \quad\Longrightarrow\quad E_{\mathrm{PLTR}}=1.25\%
+\end{equation}
+
+Controlling condition:
+\begin{equation}
+  E_{\mathrm{PLTR}}>0
+  \quad\Longleftrightarrow\quad
+  L_{\mathrm{PLTR}}<W_{\mathrm{PLTR}}
+\end{equation}
+
+Use actual earnings-event fills. The 2.5\% stop trigger does not establish
+$L_{\mathrm{PLTR}}$.
+
+\section{xyz:WTIOIL 6:00 p.m. Reopen}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+MARKET & xyz:WTIOIL; API asset xyz:CL \\
+EVENT & external WTI futures pricing resumes \\
+TIME & 6:00 p.m.\ Eastern, Sunday-Thursday \\
+ENTRY & immediately before 6:00 p.m.\ Eastern \\
+STOP & trigger 2.5\% against the position \\
+TARGET & 5.0\% with the position \\
+WIN RATE & 50\% \\
+PRICING & internal 5:00-6:00 p.m.; external after 6:00 p.m. \\
+VENUE LIMITS & 20x max leverage; $\pm 5\%$ discovery bound
+\end{tabular}}
+
+XYZ continues trading during the traditional 5:00-6:00 p.m.\ maintenance
+window. At 6:00 p.m., the external WTI price resumes. Continuous internal price
+discovery reduces the closure gap; divergence at the external re-anchor remains.
+
+\begin{equation}
+  E_{\mathrm{WTI}}
+  =0.50W_{\mathrm{WTI}}-0.50L_{\mathrm{WTI}}
+  =\frac{1}{2}\left(W_{\mathrm{WTI}}-L_{\mathrm{WTI}}\right)
+\end{equation}
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$E_{\mathrm{WTI}}$ & expected net return per WTI reopen trade \\
+$W_{\mathrm{WTI}}$ & average realized net return on winning WTI trades \\
+$L_{\mathrm{WTI}}$ & average realized net loss on losing WTI trades
+\end{tabular}}
+
+Target case:
+\begin{equation}
+  W_{\mathrm{WTI}}=5.0\%,\quad L_{\mathrm{WTI}}=2.5\%
+  \quad\Longrightarrow\quad E_{\mathrm{WTI}}=1.25\%
+\end{equation}
+
+Controlling condition:
+\begin{equation}
+  E_{\mathrm{WTI}}>0
+  \quad\Longleftrightarrow\quad
+  L_{\mathrm{WTI}}<W_{\mathrm{WTI}}
+\end{equation}
+
+Use actual fills immediately after the external re-anchor. The 2.5\% stop
+trigger does not establish $L_{\mathrm{WTI}}$.
+
+\end{document}
