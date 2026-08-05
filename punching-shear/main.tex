@@ -1,23 +1,26 @@
 \documentclass[10pt]{article}
 
-\usepackage[margin=0.75in]{geometry}
-\usepackage{amsmath, amssymb}
+\usepackage[margin=0.68in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,tabularx}
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
 \usepackage{inconsolata}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
 
 \graphicspath{{../}}
-
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
-\renewcommand{\baselinestretch}{1.05}
+\renewcommand{\baselinestretch}{1.03}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
 
 \titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
 \titlespacing*{\section}{0pt}{8pt}{2pt}
-\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titleformat{\subsection}{\ttfamily\small\bfseries\MakeUppercase}{\thesubsection}{0.6em}{}
 \titlespacing*{\subsection}{0pt}{6pt}{2pt}
 
 \pagestyle{fancy}
@@ -25,218 +28,473 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0.5pt}
 \fancyfoot[L]{\ttfamily\footnotesize PUNCHING-SHEAR}
-\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[C]{\ttfamily\footnotesize ACI 318-19 BASIS}
 \fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\newcommand{\code}[1]{{\ttfamily\footnotesize #1}}
+\newcommand{\req}{\textbf{REQUIRED}}
+\newcommand{\guide}{\textbf{GUIDE}}
 
 \begin{document}
 
 \noindent\includegraphics[height=0.7cm]{logo}\hfill
-{\ttfamily\normalsize\bfseries\MakeUppercase{Punching Shear}}\quad
+{\ttfamily\normalsize\bfseries\MakeUppercase{Punching Shear + Stud Rails}}\quad
 {\ttfamily\footnotesize\today}
 \vspace{4pt}\hrule\vspace{6pt}
 
-\section{Critical Section}
+\begin{center}
+\fbox{\begin{minipage}{0.94\linewidth}
+\small
+\textbf{Normative basis.} ACI 318-19 for required strength and detailing;
+ACI 421.1R-20 for general-shape perimeter mechanics and stud-rail guidance;
+ASTM A1044/A1044M-16a for headed shear stud assemblies. This document is
+version-locked. It is not an ACI 318-25 calculation.
 
-Critical perimeter at $d/2$ from the column face, concentrated load, or reaction area.
+\textbf{Scope.} Nonprestressed, solid two-way slabs without beams, reinforced
+with vertical smooth headed shear studs. Inch-pound equations only. Prestressed
+slabs, stirrups, shearheads, slabs with void systems, and seismic deformation
+checks require separate methods.
+\end{minipage}}
+\end{center}
 
-\begin{equation}
-A_c = b_o d
-\end{equation}
+\section{Input Contract}
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$A_c$ & area of concrete critical section [in$^2$] \\
-$b_o$ & perimeter of critical section [in] \\
-$d$ & average effective slab depth [in] \\
-\end{tabular}
+The calculation shall not infer structural properties from display geometry.
+Every slab region shall reference one assigned slab type.
+
+{\small
+\begin{tabularx}{\linewidth}{@{}p{1.65in}X@{}}
+\toprule
+\textbf{Input group} & \textbf{Required data} \\
+\midrule
+Slab type &
+$h$, $f'_c$, concrete density class or $\lambda$, top and bottom reinforcing
+bar size, spacing, layer order, cover, and $f_y$ in both orthogonal directions. \\
+Support &
+Actual loaded/reaction footprint; support centroid $O$; interior, edge, or
+corner classification; slab boundaries; thickness changes; openings. \\
+Actions &
+Signed $V_u$, $M_{sc,Ox}$, and $M_{sc,Oy}$ for every applicable factored load
+combination, all reported at the same point $O$ and in the same axes. \\
+Stud assembly &
+ASTM A1044/A1044M assembly, stud shaft diameter $D$, specified design yield
+strength $f_{yt}$, rail locations, stud coordinates, base-rail orientation,
+head/rail covers, and assembly height. \\
+\bottomrule
+\end{tabularx}
 }
 
-\section{Factored Shear Stress}
+\textbf{Validation.} Require $h,d,f'_c,f_y,f_{yt}>0$,
+$0.75\leq\lambda\leq1.0$, $0<\lambda_s\leq1.0$, consistent force/length units,
+and stud area consistent with the certified shaft diameter. Do not accept an
+independent diameter and area that disagree.
 
+\section{Effective Depth}
+
+For each load combination, identify the actual tension reinforcement relative
+to the extreme compression face. Using the reinforcement centroids,
 \begin{equation}
-v_u = \frac{V_u}{A_c}
-      + \frac{\gamma_{vx} M_{ux} c_y}{J_{cx}}
-      + \frac{\gamma_{vy} M_{uy} c_x}{J_{cy}}
+d=\frac{d_x+d_y}{2}.
 \end{equation}
+$d_x$ and $d_y$ are distances from the extreme compression face to the
+centroids of the tension reinforcement in the two slab directions. Layer order
+matters. For moment reversal, the bottom mat can govern and $d$ shall be
+recomputed. Bar spacing does not directly enter ACI 318-19 punching strength,
+but it does enter the companion flexural-reinforcement checks in Section 10.
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$v_u$ & factored two-way shear stress at critical section [psi] \\
-$V_u$ & factored shear transferred across critical section [lb] \\
-$\gamma_{vx}$ & fraction of $M_{ux}$ transferred by eccentricity of shear \\
-$M_{ux}$ & factored unbalanced moment about $x$ axis [lb-in] \\
-$c_y$ & distance from critical-section centroid to checked perimeter point in $y$ direction [in] \\
-$J_{cx}$ & critical-section property for stress from $M_{ux}$ [in$^4$] \\
-$\gamma_{vy}$ & fraction of $M_{uy}$ transferred by eccentricity of shear \\
-$M_{uy}$ & factored unbalanced moment about $y$ axis [lb-in] \\
-$c_x$ & distance from critical-section centroid to checked perimeter point in $x$ direction [in] \\
-$J_{cy}$ & critical-section property for stress from $M_{uy}$ [in$^4$] \\
-\end{tabular}
-}
+\section{Critical Sections}
 
-\subsection{$J_c$ From Critical Section Geometry}
+\subsection{Inner Sections}
 
+For two-way shear, select the polygon having minimum effective perimeter $b_o$
+that is not closer than $d/2$ to:
+\begin{itemize}
+\setlength\itemsep{0pt}
+\item edges or corners of the column, concentrated load, or reaction area; and
+\item changes in slab thickness, including drop panels, capitals, or shear caps.
+\end{itemize}
+Check every applicable section. A circular or regular polygonal support may be
+replaced by a square of equal area when permitted by ACI 318-19 22.6.4.1.2.
+
+At a slab edge, the critical section may terminate at the free edge. Do not
+count a fictitious segment along the free edge.
+
+\subsection{Openings}
+
+If the nearest opening boundary is closer than $4h$ to the periphery of the
+column, load, or reaction area, draw tangents from the support/load centroid to
+the opening. The portion of each critical perimeter between those tangents is
+ineffective. Apply the rule independently to the inner and outer sections.
+Openings at $4h$ or farther do not reduce $b_o$ under ACI 318-19 22.6.4.3.
+
+\subsection{Outer Section With Studs}
+
+Also check a polygon at $d/2$ beyond the actual outermost peripheral line of
+studs, selected to minimize $b_o$. Build this perimeter from the real endpoint
+of every rail/face. A single maximum stud radius is not a valid substitute for
+the actual layout. At free edges, terminate the effective perimeter at the slab
+edge.
+
+\section{Net Actions at Each Perimeter}
+
+For every load combination and every critical perimeter $P$, use the net
+factored actions crossing that perimeter:
 \begin{equation}
-J_c = \sum_i \left(I_i + A_i r_i^2\right)
+V_u(P)=R_u-\int_{A_{\mathrm{inside}}(P)}q_u\,dA.
 \end{equation}
+Apply the same equilibrium to both moment components. If the loads inside a
+perimeter are intentionally ignored, report that assumption; do not silently
+reuse an inner demand at the outer perimeter.
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$I_i$ & segment property about its own centroidal axis [in$^4$] \\
-$A_i$ & segment area of critical section [in$^2$] \\
-$r_i$ & distance from segment centroid to centroidal axis of critical section [in] \\
-\end{tabular}
-}
-
-\subsection{Moment Transfer Fraction}
-
+Translate moments from support centroid $O$ to critical-section centroid $C$.
+Using the ACI 421 sign convention,
 \begin{equation}
-\gamma_v = 1 - \gamma_f, \qquad
-\gamma_f = \frac{1}{1 + \frac{2}{3}\sqrt{b_1/b_2}}
+M_{sc,\bar x}=M_{sc,O\bar x}+V_u\bar y_O,\qquad
+M_{sc,\bar y}=M_{sc,O\bar y}+V_u\bar x_O,
 \end{equation}
-
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$\gamma_v$ & fraction of unbalanced moment transferred by eccentricity of shear \\
-$\gamma_f$ & fraction of unbalanced moment transferred by flexure \\
-$b_1$ & critical-section width perpendicular to axis of moment [in] \\
-$b_2$ & critical-section width parallel to axis of moment [in] \\
-\end{tabular}
-}
-
-\section{Concrete Shear Strength}
-
+where $(\bar x_O,\bar y_O)$ locates $O$ from $C$. Then rotate both geometry and
+moments to the centroidal principal axes:
 \begin{equation}
-v_c = \min\!\left\{
 \begin{aligned}
-&4 \lambda_s \lambda \sqrt{f'_c} \\
-&2\left(1+\frac{2}{\beta}\right)\lambda_s \lambda \sqrt{f'_c} \\
-&\left(2+\frac{\alpha_s d}{b_o}\right)\lambda_s \lambda \sqrt{f'_c}
+x&=\bar x\cos\theta+\bar y\sin\theta,&
+y&=-\bar x\sin\theta+\bar y\cos\theta,\\
+M_{sc,x}&=M_{sc,\bar x}\cos\theta-M_{sc,\bar y}\sin\theta,&
+M_{sc,y}&=M_{sc,\bar x}\sin\theta+M_{sc,\bar y}\cos\theta.
 \end{aligned}
-\right\}
 \end{equation}
 
+\section{General-Shape Section Properties}
+
+Partition the effective perimeter into straight segments with endpoints
+$(x_i,y_i)$ and $(x_j,y_j)$ and length $L_k$. First calculate the line centroid:
 \begin{equation}
-\lambda_s = \min\!\left(1.0,\ \sqrt{\frac{2}{1+d/10}}\right)
+b_o=\sum_k L_k,\qquad A_c=b_od,\qquad
+\bar x=\frac{\sum_k L_k(x_i+x_j)/2}{b_o},\qquad
+\bar y=\frac{\sum_k L_k(y_i+y_j)/2}{b_o}.
+\end{equation}
+Shift all endpoint coordinates to $(\bar x,\bar y)=(0,0)$. In any centroidal
+axes,
+\begin{align}
+J_{\bar x}&=d\sum_k\frac{L_k}{3}
+  \left(y_i^2+y_iy_j+y_j^2\right),\\
+J_{\bar y}&=d\sum_k\frac{L_k}{3}
+  \left(x_i^2+x_ix_j+x_j^2\right),\\
+J_{\bar x\bar y}&=d\sum_k\frac{L_k}{6}
+  \left(2x_iy_i+x_iy_j+x_jy_i+2x_jy_j\right).
+\end{align}
+Rotate to principal axes so $J_{xy}=0$. A nonzero $J_{xy}$ is not a warning
+condition: it requires the inertia tensor and both moment components to be
+transformed. The principal-axis values $J_x$ and $J_y$ shall be positive.
+
+\section{Factored Shear-Stress Distribution}
+
+In centroidal principal axes, with signs defined by equilibrium,
+\begin{equation}
+v_u(x,y)=\frac{V_u}{b_od}
+ +\frac{\gamma_{vx}M_{sc,x}y}{J_x}
+ +\frac{\gamma_{vy}M_{sc,y}x}{J_y}.
+\end{equation}
+Evaluate the signed expression at every endpoint of every effective segment for
+every factored load combination:
+\begin{equation}
+v_{u,\max}=\max_{\mathrm{combos,\ endpoints}}\left|v_u(x,y)\right|.
+\end{equation}
+Because the assumed stress is linear on each straight segment, its extrema occur
+at segment endpoints. The calculator shall use the conservative endpoint value;
+it shall not apply the optional isolated-peak redistribution discussed in ACI
+421 unless that option is separately implemented, limited, and reported.
+
+\section{Moment Transfer Fractions}
+
+Let $l_x$ and $l_y$ be the full projections of the current critical perimeter
+onto its principal $x$ and $y$ axes. Recompute these values and the coefficients
+for the outer section.
+
+\subsection{Interior Connection}
+\begin{equation}
+\gamma_{vx}=1-\frac{1}{1+\frac{2}{3}\sqrt{l_y/l_x}},\qquad
+\gamma_{vy}=1-\frac{1}{1+\frac{2}{3}\sqrt{l_x/l_y}}.
 \end{equation}
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$v_c$ & nominal two-way shear stress from concrete [psi] \\
-$\lambda_s$ & size effect factor, $d$ in inches \\
-$f'_c$ & specified concrete compressive strength [psi] \\
-$\alpha_s$ & 40 interior, 30 edge, 20 corner \\
-\end{tabular}
-}
+\subsection{Edge Connection}
 
-\section{Headed Shear Studs}
-
-\subsection{Inner Critical Section}
-
+For a standard three-sided perimeter, take $x$ normal to the free edge and $y$
+parallel to it:
 \begin{equation}
-v_{c,\text{stud}} = \min\!\left\{
+\gamma_{vx}=1-\frac{1}{1+\frac{2}{3}\sqrt{l_y/l_x}},
+\end{equation}
+\begin{equation}
+\gamma_{vy}=
+\begin{cases}
+0, & l_x/l_y\leq0.2,\\[2pt]
+1-\dfrac{1}{1+\frac{2}{3}\sqrt{l_x/l_y-0.2}}, & l_x/l_y>0.2.
+\end{cases}
+\end{equation}
+
+\subsection{Corner Connection}
+
+For the standard two-sided perimeter, label the principal axes per ACI 421 with
+$l_x\leq l_y$:
+\begin{equation}
+\gamma_{vx}=0.40,\qquad
+\gamma_{vy}=
+\begin{cases}
+0, & l_x/l_y\leq0.2,\\[2pt]
+1-\dfrac{1}{1+\frac{2}{3}\sqrt{l_x/l_y-0.2}}, & l_x/l_y>0.2.
+\end{cases}
+\end{equation}
+
+Do not classify a perimeter from a bounding box. If openings, multiple free
+edges, or a nonstandard footprint create a topology that does not match the
+ACI 421 interior/edge/corner cases, require an engineer-specified, documented
+method instead of inventing $\gamma_v$.
+
+The basic ACI 318 moment split is $\gamma_v=1-\gamma_f$. Do not reduce
+$\gamma_v$ under the optional ACI 318-19 8.4.2.2.4 redistribution unless its
+$v_{uv}$, strain, and flexural-strength conditions are all checked and
+$\gamma_fM_{sc}$ is transferred to the slab reinforcement.
+
+\section{Concrete Strength Without Studs}
+
+ACI 318-19 22.6.3 limits the concrete strength used to calculate $v_c$:
+\begin{equation}
+f'_{c,v}=\min(f'_c,10{,}000\ \mathrm{psi}).
+\end{equation}
+Use the specified $f'_c$ for checks that are not calculations of $v_c$, unless
+their governing provision states otherwise. For nonprestressed members, in psi,
+\begin{equation}
+v_c=\min\!\left\{
 \begin{aligned}
-&3 \lambda_s \lambda \sqrt{f'_c} \\
-&2\left(1+\frac{2}{\beta}\right)\lambda_s \lambda \sqrt{f'_c} \\
-&\left(2+\frac{\alpha_s d}{b_o}\right)\lambda_s \lambda \sqrt{f'_c}
-\end{aligned}
-\right\}
+&4\lambda_s\lambda\sqrt{f'_{c,v}}\\
+&2\left(1+\frac{2}{\beta}\right)\lambda_s\lambda\sqrt{f'_{c,v}}\\
+&\left(2+\frac{\alpha_s d}{b_o}\right)
+  \lambda_s\lambda\sqrt{f'_{c,v}}
+\end{aligned}\right\},
 \end{equation}
+\begin{equation}
+\lambda_s=\min\!\left(1.0,\sqrt{\frac{2}{1+d/10}}\right).
+\end{equation}
+$\beta$ is the long-to-short dimension ratio of the effective column, loaded,
+or reaction area. For a nonrectangular area, use the ACI effective loaded-area
+definition, not the critical-perimeter bounding box. Use
+$\alpha_s=40,30,20$ for interior, edge, and corner connections.
 
 \begin{equation}
-v_s = \frac{A_v f_{yt}}{b_o s}, \qquad
-\frac{A_v}{s} \geq \frac{2\sqrt{f'_c}\,b_o}{f_{yt}}
+\boxed{v_{u,\max}\leq\phi v_c},\qquad \phi=0.75.
 \end{equation}
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$v_{c,\text{stud}}$ & nominal concrete stress at inner stud-reinforced critical section [psi] \\
-$A_v$ & sum of stud areas on one peripheral line [in$^2$] \\
-$f_{yt}$ & yield strength of shear studs used for design [psi] \\
-$s$ & spacing of peripheral stud lines perpendicular to column face [in] \\
-\end{tabular}
-}
+\section{Headed Shear Stud Strength}
 
-\medskip{\ttfamily\footnotesize\bfseries INNER LIMITS}
+\subsection{Material and Area}
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}p{2.4in}p{4.0in}@{}}
-Strength & $\phi(v_{c,\text{stud}} + v_s) \geq v_u$ \\
-Compression cap & $v_u \leq 8\phi\sqrt{f'_c}$ \\
-$f_{yt}$ used in $v_s$ & limited by ACI transverse reinforcement limit \\
-\end{tabular}
-}
-
-\subsection{Outer Critical Section}
+Stud assemblies shall conform to ASTM A1044/A1044M. Use the specified design
+yield strength certified for the assembly and accepted by the project design
+basis:
+\begin{equation}
+f_{yt,v}=
+\min(f_{yt,\mathrm{specified}},f_{yt,\mathrm{qualified}},
+f_{yt,\mathrm{project\ limit}},60{,}000\ \mathrm{psi}).
+\end{equation}
+The $60$ ksi maximum follows ACI 318-19 22.6.3.2 and 20.2.2.4. Do not use a
+higher value in $v_s$. Where the product basis specifies $51$ ksi, use
+$51{,}000$ psi.
 
 \begin{equation}
-v_{c,\text{out}} = 2\lambda_s\lambda\sqrt{f'_c}, \qquad
-\phi v_{c,\text{out}} \geq v_{u,\text{out}}
+A_{\mathrm{stud}}=\frac{\pi D^2}{4},\qquad
+A_v=N_pA_{\mathrm{stud}},
 \end{equation}
+where $N_p$ is the number of studs crossing one geometrically similar
+peripheral line. $A_v$ is not the area of every stud on every rail.
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$v_{c,\text{out}}$ & nominal concrete stress beyond outermost stud line [psi] \\
-$v_{u,\text{out}}$ & factored stress at outer critical section using outer $A_c$, $J_c$, and $c$ [psi] \\
-\end{tabular}
-}
-
-\subsection{Stud Geometry}
+\subsection{Inner Stud-Reinforced Section}
 
 \begin{equation}
-h_{\text{stud}} \geq h - c_{\text{top}} - c_{\text{rail}} - \frac{d_b}{2}
+v_{c,\mathrm{stud}}=\min\!\left\{
+\begin{aligned}
+&3\lambda_s\lambda\sqrt{f'_{c,v}}\\
+&2\left(1+\frac{2}{\beta}\right)\lambda_s\lambda\sqrt{f'_{c,v}}\\
+&\left(2+\frac{\alpha_s d}{b_o}\right)
+  \lambda_s\lambda\sqrt{f'_{c,v}}
+\end{aligned}\right\},
+\qquad
+v_s=\frac{A_vf_{yt,v}}{b_os}.
 \end{equation}
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$h_{\text{stud}}$ & overall height of headed shear stud assembly [in] \\
-$h$ & slab thickness [in] \\
-$c_{\text{top}}$ & concrete cover on top flexural reinforcement [in] \\
-$c_{\text{rail}}$ & concrete cover on base rail [in] \\
-$d_b$ & flexural tension reinforcement bar diameter [in] \\
-$\ell_{\text{shaft}}$ & smooth stud shaft length [in] \\
-\end{tabular}
-}
-
-\medskip{\ttfamily\footnotesize\bfseries PLACEMENT LIMITS}
-
-{\ttfamily\footnotesize
-\begin{tabular}{@{}p{3.1in}p{3.3in}@{}}
-Stud orientation & perpendicular to slab plane \\
-Column face to first peripheral stud line & $\leq d/2$ \\
-Stud-line spacing, $v_u \leq 6\phi\sqrt{f'_c}$ & $s \leq 3d/4$ \\
-Stud-line spacing, $v_u > 6\phi\sqrt{f'_c}$ & $s \leq d/2$ \\
-Adjacent studs on first peripheral line & $\leq 2d$ \\
-Size-effect waiver & $\lambda_s = 1.0$ only if $\ell_{\text{shaft}}\leq10$ in and $A_v/s$ min satisfied \\
-\end{tabular}
-}
-
-\section{Strength Check}
-
+Once studs are required, the design ratio shall satisfy both strength and the
+minimum reinforcement:
 \begin{equation}
-\phi v_n \geq v_u, \qquad v_n = v_c + v_s, \qquad \phi = 0.75
+\left(\frac{A_v}{s}\right)_{\mathrm{req}}=
+\max\!\left[
+\frac{b_o}{f_{yt,v}}
+\max\!\left(\frac{v_{u,\max}}{\phi}-v_{c,\mathrm{stud}},0\right),
+\frac{2\sqrt{f'_c}\,b_o}{f_{yt,v}}
+\right].
+\end{equation}
+The provided ratio is valid only for a layout with constant radial spacing $s$
+and a defined $A_v$ on each peripheral line. Variable rail spacings or missing
+studs break that idealization and shall be rejected or checked line-by-line with
+a separately validated method.
+
+Both inner limits are mandatory:
+\begin{equation}
+\boxed{v_{u,\max}\leq\phi(v_{c,\mathrm{stud}}+v_s)},\qquad
+\boxed{v_{u,\max}\leq8\phi\sqrt{f'_c}}.
 \end{equation}
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}ll@{}}
-$v_n$ & nominal two-way shear stress [psi] \\
-$v_s$ & nominal two-way shear stress from shear reinforcement [psi] \\
-\end{tabular}
+\subsection{Outer Section}
+
+Stud contribution is zero outside the reinforced zone:
+\begin{equation}
+v_{c,\mathrm{out}}=2\lambda_s\lambda\sqrt{f'_{c,v}},\qquad
+\boxed{v_{u,\max,\mathrm{out}}\leq\phi v_{c,\mathrm{out}}}.
+\end{equation}
+Use the outer section's own $b_o$, centroid, principal axes, $J_x$, $J_y$,
+$l_x$, $l_y$, $\gamma_{vx}$, $\gamma_{vy}$, net force, and net moments.
+
+\subsection{Size-Effect Exception}
+
+The default is the calculated $\lambda_s$. It may be set to $1.0$ only when
+smooth headed shear studs are designed and detailed per ACI 318-19 8.7.7,
+the smooth shaft length of every applicable stud is at most $10$ in., and
+\begin{equation}
+\frac{A_v}{s}\geq\frac{2\sqrt{f'_c}\,b_o}{f_{yt,v}}.
+\end{equation}
+Apply the accepted value consistently to the inner and outer concrete terms.
+Overall assembly height and smooth shaft length are different dimensions.
+
+\section{Stud Detailing Rules}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}p{2.55in}X@{}}
+\toprule
+\textbf{Rule} & \textbf{Acceptance criterion} \\
+\midrule
+Product & ASTM A1044/A1044M assembly; studs perpendicular to slab plane. \\
+First peripheral line & Face-to-stud distance measured normal to support face,
+$s_o\leq d/2$. \\
+Radial spacing, lower demand &
+Constant $s\leq3d/4$ when
+$v_{u,\max}\leq\phi\,6\sqrt{f'_c}$. \\
+Radial spacing, higher demand &
+Constant $s\leq d/2$ when
+$v_{u,\max}>\phi\,6\sqrt{f'_c}$. \\
+Transverse spacing & Adjacent studs on the first peripheral line:
+$g\leq2d$, measured parallel to the relevant column face. Check each face;
+do not connect points across free edges or openings. \\
+Extent & Every face/rail shall reach the actual outer stud line used to
+construct the passing outer critical section. \\
+Assembly height &
+$h_{\mathrm{assembly}}\geq h-c_{\mathrm{top}}-c_{\mathrm{rail}}-d_b/2$. \\
+Peripheral lines & At least two peripheral lines when studs are provided
+(\guide: ACI 421.1R layout recommendation). \\
+\bottomrule
+\end{tabularx}
 }
 
-\medskip{\ttfamily\footnotesize\bfseries CHECK ORDER}
+Check dimensions against actual stud coordinates and actual slab boundaries.
+Do not infer compliance from rail count, maximum radius, or a rendered symbol.
 
-{\ttfamily\footnotesize
-\begin{tabular}{@{}p{1.3in}p{5.4in}@{}}
-1 & Set inner critical perimeter and remove ineffective portions at openings or slab edges \\
-2 & Compute $A_c$ and $J_c$ from the actual critical section geometry \\
-3 & Compute $v_u$ using direct shear plus $\gamma_v M_u c / J_c$ \\
-4 & If studs are used, check inner $v_u$ cap and design $A_v/s$ \\
-5 & Set outer critical perimeter at $d/2$ beyond the last stud line \\
-6 & Recompute outer $A_c$, $J_c$, $c$, and $v_{u,\text{out}}$ with no $v_s$ \\
-7 & Check stud geometry, first-line distance, line spacing, and stud spacing \\
-8 & Pass when all inner and outer perimeter points satisfy $\phi v_n \geq v_u$ \\
-\end{tabular}
+\section{Companion Flexural Checks}
+
+Studs do not eliminate slab-column flexural-transfer requirements.
+
+\subsection{Moment Transferred by Flexure}
+
+In each direction, reinforcement within the effective slab width $b_{\mathrm{slab}}$
+shall satisfy
+\begin{equation}
+\phi_f M_n\geq\gamma_f M_{sc}.
+\end{equation}
+$b_{\mathrm{slab}}$ is the support width plus the permitted distance on each
+side under ACI 318-19 8.4.2.2.3, generally limited to $1.5h$ on each side and
+further limited by slab edges or drop/cap geometry.
+
+\subsection{Flexure-Driven Punching Minimum}
+
+For a nonprestressed two-way slab, calculate the direct shear stress without
+moment transfer:
+\begin{equation}
+v_{uv}=\frac{|V_u|}{b_od}.
+\end{equation}
+If
+\begin{equation}
+v_{uv}>\phi\,2\lambda_s\lambda\sqrt{f'_c},
+\end{equation}
+provide bonded flexural tension reinforcement over $b_{\mathrm{slab}}$:
+\begin{equation}
+A_{s,\min,\mathrm{FDPS}}=
+\frac{5v_{uv}b_{\mathrm{slab}}b_o}{\phi\alpha_s f_y}.
+\end{equation}
+Check both slab directions, the actual tension face for each load combination,
+bar development, and the ordinary slab minimum reinforcement. For uniform bars,
+$A_{s,\mathrm{prov}}\approx A_{\mathrm{bar}}b_{\mathrm{slab}}/s_{\mathrm{bar}}$;
+use actual bar coordinates when available.
+
+\section{Deterministic Check Sequence}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}p{0.28in}X@{}}
+\toprule
+1 & Validate assigned slab type, materials, units, reinforcement layers,
+support footprint, boundaries, openings, actions, and stud certification. \\
+2 & For each load combination, determine the tension face and $d_x,d_y,d$. \\
+3 & Construct every inner critical section; apply free-edge and $4h$ opening
+rules; calculate net actions. \\
+4 & Calculate centroid and full inertia tensor; rotate geometry and actions to
+principal axes; compute $\gamma_v$ from the actual perimeter topology. \\
+5 & Evaluate signed stress at every segment endpoint; retain the largest
+absolute value and its load combination, perimeter, segment, and coordinate. \\
+6 & Check concrete-only strength. If it fails, require the stud compression cap
+before designing $A_v/s$. \\
+7 & Check inner stud strength, minimum $A_v/s$, product properties, height,
+$s_o$, $s$, $g$, and at least two peripheral lines. \\
+8 & Construct the minimum outer perimeter from real outermost studs; recompute
+all geometry, actions, coefficients, and stress; check concrete-only strength. \\
+9 & Check $\gamma_fM_{sc}$ flexural transfer and ACI 318-19 8.6.1.2
+flexure-driven punching reinforcement. \\
+10 & Pass only when every factored combination and every required inner and
+outer section passes. Report all governing values and code references. \\
+\bottomrule
+\end{tabularx}
+}
+
+\section{Required Result Record}
+
+The calculation output shall retain, not merely display:
+\begin{itemize}
+\setlength\itemsep{0pt}
+\item code edition; slab type ID; $h,f'_c,\lambda,d_x,d_y,d$;
+\item effective perimeter segments before and after edge/opening reductions;
+\item $b_o,A_c,C,J_{\bar x},J_{\bar y},J_{\bar x\bar y},\theta,J_x,J_y,l_x,l_y$;
+\item net $V_u,M_{sc,x},M_{sc,y}$ and $\gamma_{vx},\gamma_{vy}$ by combination;
+\item controlling endpoint and signed stress components;
+\item each concrete-strength branch, $f'_{c,v}$, $\lambda_s$, $\beta$, and
+$\alpha_s$;
+\item $D,A_{\mathrm{stud}},N_p,A_v,s,A_v/s,f_{yt},f_{yt,v}$ and every detailing
+limit;
+\item inner strength, compression cap, outer strength, flexural transfer, and
+flexure-driven punching checks.
+\end{itemize}
+
+\section{Code Map}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}p{2.15in}X@{}}
+\toprule
+\textbf{Subject} & \textbf{Reference} \\
+\midrule
+Moment transfer and shear stress & ACI 318-19 8.4.2.2 and 8.4.4.2;
+ACI 421.1R-20 Chs. 4 and 7, App. B \\
+Minimum slab flexural steel & ACI 318-19 8.6.1.2 \\
+Stud placement and assembly height & ACI 318-19 8.7.7.1 \\
+Critical sections and openings & ACI 318-19 22.6.4 \\
+Concrete strength without studs & ACI 318-19 22.6.5 \\
+Strength with headed studs & ACI 318-19 22.6.6 and 22.6.8 \\
+Material-strength limits & ACI 318-19 22.6.3 and 20.2.2.4 \\
+Strength reduction factor & ACI 318-19 Table 21.2.1 \\
+Stud product requirements & ACI 318-19 20.4; ASTM A1044/A1044M-16a \\
+\bottomrule
+\end{tabularx}
 }
 
 \end{document}
