@@ -30,3 +30,4 @@ Source of truth lives at `template/main.tex`. Placeholders: `<DOC-ID>` (slug in 
 - Math: LaTeX with proper Greek letters (style guide MATH rule).
 - Tables: mono tabular numerals, right-align numbers, 8pt uppercase muted headers, 0.5pt borders.
 - No bold in body. No decorative headers, heroes, or padding beyond what the template sets.
+- Generated visuals (figures, renders, diagrams): ALWAYS review the rendered image with vision before returning it to Gabe. Check for overlapping/clipped text, misaligned callouts, clutter, and bad depth/occlusion. Iterate until presentation-clean — style-guide quality, not matplotlib defaults.
