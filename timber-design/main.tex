@@ -1,0 +1,332 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize TIMBER-DESIGN}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Timber Design}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Adjustment Factors}
+
+{\ttfamily\footnotesize\bfseries SAWN LUMBER $\cdot$ WHERE: NDS \S 4.3, TABLE 4.3.1}
+
+\medskip
+{\setlength{\tabcolsep}{3.5pt}\setlength{\arrayrulewidth}{0.5pt}\renewcommand{\arraystretch}{1.25}\ttfamily\footnotesize
+\begin{tabular}{@{}lccccccccccccrrc@{}}
+\hline
+ & & {\scriptsize ASD} & \multicolumn{10}{c}{\scriptsize ASD + LRFD} & \multicolumn{3}{c}{\scriptsize LRFD ONLY} \\
+ & & \rotatebox{90}{\scriptsize LOAD DURATION}
+   & \rotatebox{90}{\scriptsize WET SERVICE}
+   & \rotatebox{90}{\scriptsize TEMPERATURE}
+   & \rotatebox{90}{\scriptsize BEAM STABILITY}
+   & \rotatebox{90}{\scriptsize SIZE}
+   & \rotatebox{90}{\scriptsize FLAT USE}
+   & \rotatebox{90}{\scriptsize INCISING}
+   & \rotatebox{90}{\scriptsize REPETITIVE MEMBER}
+   & \rotatebox{90}{\scriptsize COLUMN STABILITY}
+   & \rotatebox{90}{\scriptsize BUCKLING STIFFNESS}
+   & \rotatebox{90}{\scriptsize BEARING AREA}
+   & \rotatebox{90}{\scriptsize FORMAT CONV.\ $K_F$}
+   & \rotatebox{90}{\scriptsize RESISTANCE $\phi$}
+   & \rotatebox{90}{\scriptsize TIME EFFECT} \\
+\hline
+$F_b'    = F_b$      & $\times$ & $C_D$ & $C_M$ & $C_t$ & $C_L$ & $C_F$ & $C_{fu}$ & $C_i$ & $C_r$ & --    & --    & --    & 2.54 & 0.85 & $\lambda$ \\
+$F_t'    = F_t$      & $\times$ & $C_D$ & $C_M$ & $C_t$ & --    & $C_F$ & --       & $C_i$ & --    & --    & --    & --    & 2.70 & 0.80 & $\lambda$ \\
+$F_v'    = F_v$      & $\times$ & $C_D$ & $C_M$ & $C_t$ & --    & --    & --       & $C_i$ & --    & --    & --    & --    & 2.88 & 0.75 & $\lambda$ \\
+$F_c'    = F_c$      & $\times$ & $C_D$ & $C_M$ & $C_t$ & --    & $C_F$ & --       & $C_i$ & --    & $C_P$ & --    & --    & 2.40 & 0.90 & $\lambda$ \\
+$F_{c\perp}' = F_{c\perp}$ & $\times$ & -- & $C_M$ & $C_t$ & -- & --    & --       & $C_i$ & --    & --    & --    & $C_b$ & 1.67 & 0.90 & -- \\
+$E'      = E$        & $\times$ & --    & $C_M$ & $C_t$ & --    & --    & --       & $C_i$ & --    & --    & --    & --    & --   & --   & -- \\
+$E_{\min}' = E_{\min}$ & $\times$ & --  & $C_M$ & $C_t$ & --    & --    & --       & $C_i$ & --    & --    & $C_T$ & --    & 1.76 & 0.85 & -- \\
+\hline
+\end{tabular}}
+
+\subsection{Wet Service Factor $C_M$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.3 (RULE) $\cdot$ VALUES: NDS SUPPLEMENT, IN THE ADJUSTMENT-FACTOR BLOCK PRINTED AFTER EACH DESIGN-VALUE TABLE (4A, 4B, 4C, 4D)}
+
+\medskip
+Dimension lumber with moisture content $>19\%$ for an extended period: multiply design values by $C_M$ below.
+
+\medskip
+{\setlength{\arrayrulewidth}{0.5pt}\ttfamily\footnotesize
+\begin{tabular}{@{}rrrrrr@{}}
+\hline
+{\scriptsize $F_b$} & {\scriptsize $F_t$} & {\scriptsize $F_v$} & {\scriptsize $F_{c\perp}$} & {\scriptsize $F_c$} & {\scriptsize $E$, $E_{\min}$} \\
+\hline
+0.85$^{*}$ & 1.0 & 0.97 & 0.67 & 0.8$^{**}$ & 0.9 \\
+\hline
+\end{tabular}}
+
+\smallskip
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$^{*}$  & $F_b C_F \le 1150$ psi $\rightarrow C_M = 1.0$ \\
+$^{**}$ & $F_c \le 750$ psi $\rightarrow C_M = 1.0$ \\
+\end{tabular}}
+
+\subsection{Load Duration Factor $C_D$ (ASD Only)}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.2 POINTS TO \S 2.3.2 $\cdot$ VALUES: TABLE 2.3.2 (CHAPTER 2)}
+
+\medskip
+{\setlength{\arrayrulewidth}{0.5pt}\ttfamily\footnotesize
+\begin{tabular}{@{}lrl@{}}
+\hline
+{\scriptsize LOAD DURATION} & {\scriptsize $C_D^{\,*}$} & {\scriptsize TYPICAL DESIGN LOAD} \\
+\hline
+Permanent   & 0.9  & Dead \\
+Ten years   & 1.0  & Occupancy live \\
+Two months  & 1.15 & Snow \\
+Seven days  & 1.25 & Construction \\
+Ten minutes & 1.6  & Wind / earthquake \\
+Impact$^{**}$ & 2.0 & Impact \\
+\hline
+\end{tabular}}
+
+\smallskip
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$^{*}$  & $C_D$ never applies to $E$, $E_{\min}$, $F_{c\perp}$ \\
+$^{**}$ & $C_D > 1.6$: not for pressure-treated (water-borne) or fire-retardant lumber \\
+        & impact $C_D$: not for connections \\
+\end{tabular}}
+
+\subsection{Temperature Factor $C_t$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.4 POINTS TO \S 2.3.3 $\cdot$ VALUES: TABLE 2.3.3 (CHAPTER 2)}
+
+\medskip
+Sustained exposure up to 150$^\circ$F (see NDS Appendix C).
+
+\medskip
+{\setlength{\arrayrulewidth}{0.5pt}\ttfamily\footnotesize
+\begin{tabular}{@{}llrrr@{}}
+\hline
+{\scriptsize REF.\ DESIGN VALUES} & {\scriptsize MOISTURE$^{*}$} & {\scriptsize $T\le100^\circ$F} & {\scriptsize $100<T\le125$} & {\scriptsize $125<T\le150$} \\
+\hline
+$F_t$, $E$, $E_{\min}$ & Wet or dry & 1.0 & 0.9 & 0.9 \\
+$F_b$, $F_v$, $F_c$, $F_{c\perp}$ & Dry & 1.0 & 0.8 & 0.7 \\
+                                  & Wet & 1.0 & 0.7 & 0.5 \\
+\hline
+\end{tabular}}
+
+\smallskip
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$^{*}$ & wet/dry service definitions: \S 4.1.4 sawn $\cdot$ 5.1.4 glulam $\cdot$ 7.1.4 I-joist \\
+       & \S 8.1.4 SCL $\cdot$ 9.3.3 panels $\cdot$ 10.1.5 CLT \\
+\end{tabular}}
+
+\subsection{Beam Stability Factor $C_L$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.5 POINTS TO \S 3.3.3 (CHAPTER 3) $\cdot$ EFFECTIVE LENGTH: TABLE 3.3.3}
+
+\medskip
+{\ttfamily\footnotesize\bfseries $C_L = 1.0$ WHEN}
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+\S 3.3.3.1 & $d \le b$ (no lateral support required) \\
+\S 3.3.3.2 & rectangular sawn lumber laterally supported per \S 4.4.1 \\
+\S 3.3.3.3 & compression edge braced full length + bearing ends held against rotation \\
+\end{tabular}}
+
+\medskip
+$d > b$: lateral support required at bearing points (\S 3.3.3.4). $\ell_u$ = distance between bearing points, intermediate lateral supports, or cantilever length. $\ell_e$ from Table 3.3.3 (\S 3.3.3.5).
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+d        & member depth, in \\
+b        & member breadth, in \\
+$\ell_u$ & laterally unsupported length, in \\
+$\ell_e$ & effective span length, in \\
+\end{tabular}}
+
+\medskip
+{\setlength{\arrayrulewidth}{0.5pt}\ttfamily\footnotesize
+\begin{tabular}{@{}lrr@{}}
+\hline
+{\scriptsize TABLE 3.3.3 --- LOADING} & {\scriptsize $\ell_u/d < 7$} & {\scriptsize $\ell_u/d \ge 7$} \\
+\hline
+\multicolumn{3}{@{}l}{{\scriptsize CANTILEVER$^{1}$}} \\
+UDL                            & $1.33\,\ell_u$ & $0.90\,\ell_u + 3d$ \\
+P at unsupported end           & $1.87\,\ell_u$ & $1.44\,\ell_u + 3d$ \\
+\hline
+\multicolumn{3}{@{}l}{{\scriptsize SINGLE SPAN$^{1,2}$}} \\
+UDL                            & $2.06\,\ell_u$ & $1.63\,\ell_u + 3d$ \\
+P at center, no int.\ support  & $1.80\,\ell_u$ & $1.37\,\ell_u + 3d$ \\
+P at center + support at center     & \multicolumn{2}{c}{$1.11\,\ell_u$} \\
+2P at 1/3 pts + supports there      & \multicolumn{2}{c}{$1.68\,\ell_u$} \\
+3P at 1/4 pts + supports there      & \multicolumn{2}{c}{$1.54\,\ell_u$} \\
+4P at 1/5 pts + supports there      & \multicolumn{2}{c}{$1.68\,\ell_u$} \\
+5P at 1/6 pts + supports there      & \multicolumn{2}{c}{$1.73\,\ell_u$} \\
+6P at 1/7 pts + supports there      & \multicolumn{2}{c}{$1.78\,\ell_u$} \\
+7P+ evenly spaced + supports there  & \multicolumn{2}{c}{$1.84\,\ell_u$} \\
+Equal end moments                   & \multicolumn{2}{c}{$1.84\,\ell_u$} \\
+\hline
+\end{tabular}}
+
+\smallskip
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$^{1}$ & loading not listed: $2.06\,\ell_u$ ($\ell_u/d<7$) $\cdot$ $1.63\,\ell_u+3d$ ($7\le\ell_u/d\le14.3$) $\cdot$ $1.84\,\ell_u$ ($>14.3$) \\
+$^{2}$ & multiple spans: table values or engineering analysis \\
+\end{tabular}}
+
+\subsection{Size Factor $C_F$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.6 $\cdot$ VALUES: NDS SUPPLEMENT TABLE 4A/4B ADJUSTMENT BLOCK}
+
+\medskip
+Visually graded dimension lumber 2--4$''$ thick: multiply $F_b$, $F_t$, $F_c$ (\S 4.3.6.1). Table 4D timbers with depth $> 12''$ (\S 4.3.6.2):
+
+\begin{equation}
+C_F = \left(12/d\right)^{1/9} \le 1.0
+\end{equation}
+
+\medskip
+{\setlength{\arrayrulewidth}{0.5pt}\ttfamily\footnotesize
+\begin{tabular}{@{}llrrrr@{}}
+\hline
+ & & \multicolumn{2}{c}{{\scriptsize $F_b$ BY THICKNESS}} & & \\
+{\scriptsize GRADES} & {\scriptsize WIDTH} & {\scriptsize 2$''$\,\&\,3$''$} & {\scriptsize 4$''$} & {\scriptsize $F_t$} & {\scriptsize $F_c$} \\
+\hline
+Select Str., & 2$''$, 3$''$, 4$''$ & 1.5 & 1.5 & 1.5 & 1.15 \\
+No.1 \& Btr, & 5$''$              & 1.4 & 1.4 & 1.4 & 1.1 \\
+No.1, No.2,  & 6$''$              & 1.3 & 1.3 & 1.3 & 1.1 \\
+No.3         & 8$''$              & 1.2 & 1.3 & 1.2 & 1.05 \\
+             & 10$''$             & 1.1 & 1.2 & 1.1 & 1.0 \\
+             & 12$''$             & 1.0 & 1.1 & 1.0 & 1.0 \\
+             & 14$''$ \& wider    & 0.9 & 1.0 & 0.9 & 0.9 \\
+\hline
+Stud         & 2$''$, 3$''$, 4$''$ & 1.1 & 1.1 & 1.1 & 1.05 \\
+             & 5$''$ \& 6$''$      & 1.0 & 1.0 & 1.0 & 1.0 \\
+             & 8$''$ \& wider      & \multicolumn{4}{l}{use No.3 values + size factors} \\
+\hline
+Constr., Std.& 2$''$, 3$''$, 4$''$ & 1.0 & 1.0 & 1.0 & 1.0 \\
+\hline
+Utility      & 4$''$               & 1.0 & 1.0 & 1.0 & 1.0 \\
+             & 2$''$ \& 3$''$      & 0.4 & --  & 0.4 & 0.6 \\
+\hline
+\end{tabular}}
+
+\subsection{Flat Use Factor $C_{fu}$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.7 $\cdot$ VALUES: NDS SUPPLEMENT TABLE 4A/4B/4C/4F ADJUSTMENT BLOCK}
+
+\medskip
+Dimension lumber 2--4$''$ thick loaded flatwise (load on wide face): $F_b$ may also be multiplied by $C_{fu}$.
+
+\medskip
+{\setlength{\arrayrulewidth}{0.5pt}\ttfamily\footnotesize
+\begin{tabular}{@{}lrr@{}}
+\hline
+ & \multicolumn{2}{c}{{\scriptsize THICKNESS (BREADTH)}} \\
+{\scriptsize WIDTH (DEPTH)} & {\scriptsize 2$''$\,\&\,3$''$} & {\scriptsize 4$''$} \\
+\hline
+2$''$ \& 3$''$   & 1.0  & --   \\
+4$''$            & 1.1  & 1.0  \\
+5$''$            & 1.1  & 1.05 \\
+6$''$            & 1.15 & 1.05 \\
+8$''$            & 1.15 & 1.05 \\
+10$''$ \& wider  & 1.2  & 1.1  \\
+\hline
+\end{tabular}}
+
+\smallskip
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+NOTE & Table 4A shading: values based on 4$''$ width (Constr./Std./Utility) $\cdot$ \\
+     & 6$''$ width (Stud) $\cdot$ 12$''$ width (Select Str., No.1 \& Btr, No.1--No.3) \\
+\end{tabular}}
+
+\subsection{Incising Factor $C_i$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.8 $\cdot$ VALUES: TABLE 4.3.8 (MAIN SPEC, CHAPTER 4)}
+
+\medskip
+Dimension lumber incised parallel to grain: max depth 0.4$''$, max length 3/8$''$.
+
+\medskip
+{\setlength{\arrayrulewidth}{0.5pt}\ttfamily\footnotesize
+\begin{tabular}{@{}lr@{}}
+\hline
+{\scriptsize DESIGN VALUE} & {\scriptsize $C_i$} \\
+\hline
+$E$, $E_{\min}$          & 0.95 \\
+$F_b$, $F_t$, $F_c$, $F_v$ & 0.80 \\
+$F_{c\perp}$             & 1.00 \\
+\hline
+\end{tabular}}
+
+\subsection{Repetitive Member Factor $C_r$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.9 $\cdot$ SINGLE VALUE, NO TABLE}
+
+\medskip
+$C_r = 1.15$ on $F_b$, dimension lumber 2--4$''$ thick (Tables 4A, 4B, 4C, 4F), when all of:
+
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+1 & $\ge 3$ members (joists, truss chords, rafters, studs, planks, decking) \\
+2 & in contact or spaced $\le 24''$ o.c. \\
+3 & joined by floor/roof/other load-distributing element \\
+\end{tabular}}
+
+\smallskip
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+NOTE & Table 4E visually graded decking: $C_r = 1.15$ already baked in \\
+\end{tabular}}
+
+\subsection{Column Stability Factor $C_P$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.10 POINTS TO \S 3.7 (COMPUTED, NO TABLE)}
+
+\medskip
+Applies to $F_c$.
+
+\subsection{Buckling Stiffness Factor $C_T$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.11 POINTS TO \S 4.4.2}
+
+\medskip
+Applies to $E_{\min}$ only.
+
+\subsection{Bearing Area Factor $C_b$}
+
+{\ttfamily\footnotesize\bfseries WHERE: NDS \S 4.3.12 POINTS TO \S 3.10.4}
+
+\medskip
+Applies to $F_{c\perp}$ (permitted increase).
+
+\end{document}
