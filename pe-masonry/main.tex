@@ -129,6 +129,43 @@ $I_n$ & net moment of inertia\\
 $e$ & eccentricity\\
 \end{tabular}}
 
+\section{Shear + Flexure (Strength Design)}
+
+{\ttfamily\footnotesize\bfseries WHERE: TMS 402-16 \S 9.3 $\cdot$ ANSWERS: $\phi V_n$ SHEAR / $\phi M_n$ MOMENT (SD) $\cdot$ $\phi$: SHEAR 0.80, FLEXURE 0.90 (\S 9.1.4)}
+
+\begin{equation}
+V_u \le \phi V_n = \phi\left(V_{nm} + V_{ns}\right)\gamma_g
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$V_{nm},\ V_{ns}$ & nominal masonry, reinforcement shares\\
+\end{tabular}}
+
+\begin{equation}
+V_{nm} = \left[4.0 - 1.75\frac{M_u}{V_u d_v}\right]A_{nv}\sqrt{f'_m} + 0.25P_u
+\qquad
+V_{ns} = 0.5\,\frac{A_v}{s}f_y d_v
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$M_u/(V_u d_v)$ & taken $\le 1.0$\\
+\end{tabular}}
+
+\begin{equation}
+a = \frac{A_s f_y + P_u}{0.80 f'_m b} \qquad M_n = \left(A_s f_y + P_u\right)\left(d - \frac{a}{2}\right)
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$a$ & equivalent stress-block depth ($0.80 f'_m$, \S 9.3.2)\\
+$\varepsilon_{mu}$ & 0.0025 CMU, 0.0035 clay (\S 9.3.2)\\
+\end{tabular}}
+
+\medskip{\ttfamily\footnotesize\bfseries LIMITS}
+
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$M_u/(V_u d_v) \le 0.25$ & $V_n \le 6 A_{nv}\sqrt{f'_m}\,\gamma_g$\\
+$M_u/(V_u d_v) \ge 1.0$ & $V_n \le 4 A_{nv}\sqrt{f'_m}\,\gamma_g$\\
+between & interpolate\\
+special wall capacity design & shear $\ge$ shear at $1.25 M_n$, need not exceed $2.5 V_u$ (\S 7.3.2.6.1)\\
+\end{tabular}}
+
 \section{Anchor Bolts (ASD)}
 
 {\ttfamily\footnotesize\bfseries WHERE: TMS 402-16 \S 8.1.3 $\cdot$ ANSWERS: HEADED-BOLT TENSION / SHEAR / COMBINED CAPACITY $\cdot$ MINIMUM MODE GOVERNS $\cdot$ BENT-BAR: ADD PULLOUT (EQ 8-3)}
