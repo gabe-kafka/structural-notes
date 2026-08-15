@@ -1,0 +1,166 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize PE-MASONRY}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{PE Masonry}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+{\ttfamily\footnotesize\bfseries CONSTANTS}\quad
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$F_s = 32{,}000$ psi & allowable steel stress, Grade 60 (\S 8.3.3.1)\\
+$F_b = 0.45 f'_m$ & allowable flexural compression, reinforced (\S 8.3.4.2.2)\\
+$E_m = 900 f'_m$ & concrete masonry modulus; clay: $700 f'_m$ (\S 4.2.2)\\
+$E_s = 29{,}000{,}000$ psi & steel modulus (\S 4.2.2)\\
+\end{tabular}}
+
+\section{Shear (ASD)}
+
+{\ttfamily\footnotesize\bfseries WHERE: TMS 402-16 \S 8.3.5 $\cdot$ ANSWERS: STEEL-ONLY / MASONRY-ONLY / COMBINED SHEAR CAPACITY $\cdot$ APPLIES: BEAMS, WALLS IN-PLANE, PIERS}
+
+\begin{equation}
+f_v = \frac{V}{A_{nv}} \le F_v = \left(F_{vm} + F_{vs}\right)\gamma_g
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$f_v$ & unit shear stress\\
+$A_{nv}$ & net shear area\\
+$F_v$ & total allowable unit shear stress\\
+$F_{vm}$ & masonry share\\
+$F_{vs}$ & shear-reinforcement share\\
+$\gamma_g$ & 0.75 partially grouted shear wall, else 1.0\\
+\end{tabular}}
+
+\begin{equation}
+F_{vm} = \frac{1}{2}\left[4.0 - 1.75\frac{M}{V d_v}\right]\sqrt{f'_m} + 0.25\frac{P}{A_{nv}}
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$d_v$ & actual member depth in direction of shear\\
+$M/(Vd_v)$ & taken $\le 1.0$; axial term $P$ zero for beams\\
+\end{tabular}}
+
+\begin{equation}
+F_{vs} = 0.5\,\frac{A_v F_s d_v}{A_{nv}\, s}
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$A_v$ & shear reinforcement area per spacing $s$\\
+\end{tabular}}
+
+\medskip{\ttfamily\footnotesize\bfseries LIMITS}
+
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$M/(Vd_v) \le 0.25$ & $F_v \le 3\sqrt{f'_m}\,\gamma_g$\\
+$M/(Vd_v) \ge 1.0$ & $F_v \le 2\sqrt{f'_m}\,\gamma_g$\\
+between & interpolate\\
+special reinforced shear wall & $F_{vm}$ coefficient $\frac{1}{2} \to \frac{1}{4}$; design for $1.5\times$ seismic $V$\\
+\end{tabular}}
+
+\section{Flexure (ASD)}
+
+{\ttfamily\footnotesize\bfseries WHERE: TMS 402-16 \S 8.3.4 $\cdot$ ANSWERS: BEAM / WALL MOMENT CAPACITY $\cdot$ APPLIES: BEAMS, LINTELS, WALLS OUT-OF-PLANE}
+
+\begin{equation}
+n = \frac{E_s}{E_m} \qquad \rho = \frac{A_s}{bd} \qquad k = \sqrt{(n\rho)^2 + 2n\rho} - n\rho \qquad j = 1 - \frac{k}{3}
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$n$ & modular ratio\\
+$k$ & neutral-axis depth ratio\\
+$j$ & moment-arm ratio\\
+\end{tabular}}
+
+\begin{equation}
+M \le \min\left( A_s F_s j d,\ \ \frac{1}{2} F_b k j b d^2 \right)
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$A_s F_s j d$ & steel governs\\
+$\frac{1}{2}F_b kjbd^2$ & masonry governs\\
+\end{tabular}}
+
+\section{Axial + Interaction (ASD)}
+
+{\ttfamily\footnotesize\bfseries WHERE: TMS 402-16 \S 8.2.4 (UNREINFORCED) $\cdot$ ANSWERS: UNREINFORCED WALL AXIAL CAPACITY, P+M UNITY CHECK}
+
+\begin{equation}
+F_a = \frac{1}{4}f'_m\left[1 - \left(\frac{h}{140r}\right)^2\right] \quad \left(\frac{h}{r} \le 99\right) \qquad
+F_a = \frac{1}{4}f'_m\left(\frac{70r}{h}\right)^2 \quad \left(\frac{h}{r} > 99\right)
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$F_a$ & allowable axial compressive stress\\
+$h$ & effective height\\
+$r$ & radius of gyration\\
+\end{tabular}}
+
+\begin{equation}
+\frac{f_a}{F_a} + \frac{f_b}{F_b} \le 1 \qquad\qquad P \le \frac{1}{4}P_e = \frac{1}{4}\,\frac{\pi^2 E_m I_n}{h^2}\left(1 - 0.577\frac{e}{r}\right)^3
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$f_a,\ f_b$ & computed axial, flexural stresses\\
+$F_b$ here & $\frac{1}{3}f'_m$ unreinforced (\S 8.2.4.2), not $0.45f'_m$\\
+$P_e$ & Euler buckling load; unreinforced check only\\
+$I_n$ & net moment of inertia\\
+$e$ & eccentricity\\
+\end{tabular}}
+
+\section{Anchor Bolts (ASD)}
+
+{\ttfamily\footnotesize\bfseries WHERE: TMS 402-16 \S 8.1.3 $\cdot$ ANSWERS: HEADED-BOLT TENSION / SHEAR / COMBINED CAPACITY $\cdot$ MINIMUM MODE GOVERNS $\cdot$ BENT-BAR: ADD PULLOUT (EQ 8-3)}
+
+\begin{equation}
+B_a = \min\left( B_{ab} = 1.25 A_{pt}\sqrt{f'_m},\ \ B_{as} = 0.6 A_b f_y \right)
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$B_a$ & allowable tension\\
+$B_{ab}$ & masonry breakout\\
+$B_{as}$ & steel yield\\
+$A_{pt}$ & projected tension breakout area\\
+$A_b$ & bolt cross-sectional area\\
+\end{tabular}}
+
+\begin{equation}
+B_v = \min\left( B_{vb} = 1.25 A_{pv}\sqrt{f'_m},\ \ B_{vc} = 350\sqrt[4]{f'_m A_b},\ \ B_{vpry} = 2.0 B_{ab},\ \ B_{vs} = 0.36 A_b f_y \right)
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$B_v$ & allowable shear\\
+$B_{vb}$ & masonry breakout\\
+$B_{vc}$ & masonry crushing\\
+$B_{vpry}$ & pryout\\
+$B_{vs}$ & steel yield\\
+$A_{pv}$ & projected shear breakout area\\
+\end{tabular}}
+
+\begin{equation}
+\frac{b_a}{B_a} + \frac{b_v}{B_v} \le 1
+\end{equation}
+{\ttfamily\footnotesize \begin{tabular}{@{}ll@{}}
+$b_a,\ b_v$ & applied tension, shear\\
+\end{tabular}}
+
+\end{document}
