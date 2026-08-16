@@ -200,4 +200,47 @@ $A_{pv}$ & projected shear breakout area\\
 $b_a,\ b_v$ & applied tension, shear\\
 \end{tabular}}
 
+\section{Worked Examples}
+
+{\ttfamily\footnotesize\bfseries EX 1 $\cdot$ ASD SHEAR, MASONRY ONLY (\S 8.3.5.1.2) $\cdot$ $f'_m$ 2000, $A_{nv}$ 732 IN$^2$, $P$ 40 K, $M/(Vd_v)$ 1.0}
+\begin{align*}
+F_{vm} &= \tfrac{1}{2}\left[4.0 - 1.75(1.0)\right]\sqrt{2000} + 0.25\tfrac{40{,}000}{732} = 50.3 + 13.7 = 64.0\ \text{psi}\\
+F_v &\le 2\sqrt{f'_m}\,\gamma_g = 89.4\ \text{psi}\ (\gamma_g = 1.0) \ \text{— OK} \qquad V = 64.0(732) = 46.8 \approx 47\ \text{kips}
+\end{align*}
+{\ttfamily\footnotesize TRAPS: drop axial term $\to$ 37 $\cdot$ axial inside the $\frac{1}{2}$ bracket $\to$ 42}
+
+\medskip
+{\ttfamily\footnotesize\bfseries EX 2 $\cdot$ ASD FLEXURE (\S 8.3.4) $\cdot$ $f'_m$ 1500, $f_y$ 60 KSI, $b$ 7.625, $d$ 20, $A_s$ 0.88 IN$^2$}
+\begin{align*}
+E_m &= 900f'_m;\quad n = \tfrac{29{,}000}{1350} = 21.5;\quad \rho = \tfrac{0.88}{7.625(20)} = 0.00577;\quad n\rho = 0.124\\
+k &= \sqrt{(n\rho)^2 + 2n\rho} - n\rho = 0.389;\qquad j = 1 - k/3 = 0.870\\
+M_s &= A_s F_s j d = 40.8\ \text{k-ft};\qquad M_m = \tfrac{1}{2}F_b k j b d^2 = 29.1\ \text{k-ft} \ \Rightarrow\ \text{masonry governs, } 29
+\end{align*}
+{\ttfamily\footnotesize TRAPS: report steel value $\to$ 41 $\cdot$ average of the two $\to$ 35}
+
+\medskip
+{\ttfamily\footnotesize\bfseries EX 3 $\cdot$ UNREINFORCED UNITY (\S 8.2.4) $\cdot$ $f'_m$ 1500, $h$ 12 FT, $r$ 2.2, $f_a$ 130, $f_b$ 200 PSI}
+\begin{align*}
+h/r &= 65.5 \le 99 \ \Rightarrow\ F_a = \tfrac{1}{4}f'_m\left[1 - \left(\tfrac{144}{308}\right)^2\right] = 293\ \text{psi (Eq 8-11)}\\
+\tfrac{f_a}{F_a} + \tfrac{f_b}{F_b} &= \tfrac{130}{293} + \tfrac{200}{500} = 0.44 + 0.40 = 0.84 \qquad F_b = \tfrac{1}{3}f'_m = 500\ \text{psi, NOT } 0.45f'_m
+\end{align*}
+{\ttfamily\footnotesize TRAPS: reinforced $F_b$ 675 $\to$ 0.74 $\cdot$ wrong slenderness branch $\to$ 0.70 $\cdot$ axial alone $\to$ 0.44}
+
+\medskip
+{\ttfamily\footnotesize\bfseries EX 4 $\cdot$ SD SHEAR, SPECIAL WALL (\S 9.3.4.1.2) $\cdot$ $f'_m$ 3000, $A_{nv}$ 549 IN$^2$, $P_u$ 10 K, \#4 @ 16 IN}
+\begin{align*}
+M_u/(V_u d_v) &= 16/6 = 2.67 \to \text{take } 1.0\\
+V_{nm} &= 2.25(549)\sqrt{3000} + 0.25(10{,}000) = 70.2\ \text{k};\qquad V_{ns} = 0.5\tfrac{0.20}{16}(60{,}000)(72) = 27.0\ \text{k}\\
+V_n &= 97.2\ \text{k} \le 4A_{nv}\sqrt{f'_m} = 120.3\ \text{k — OK};\qquad \phi V_n = 0.80(97.2) = 77.7 \approx 78\ \text{kips}
+\end{align*}
+{\ttfamily\footnotesize TRAPS: $\phi V_{nm}$ only $\to$ 56 $\cdot$ $V_{nm}$ alone $\to$ 70 $\cdot$ forgot $\phi$ $\to$ 97}
+
+\medskip
+{\ttfamily\footnotesize\bfseries EX 5 $\cdot$ SD FLEXURE (\S 9.3.2) $\cdot$ $f'_m$ 2000, $f_y$ 60 KSI, $b$ 7.625, $d$ 20, $A_s$ 0.88 IN$^2$}
+\begin{align*}
+a &= \frac{A_s f_y}{0.80 f'_m b} = \frac{52{,}800}{12{,}200} = 4.33\ \text{in.}\qquad M_n = A_s f_y\left(d - \tfrac{a}{2}\right) = 78.5\ \text{k-ft}\\
+\phi M_n &= 0.90(78.5) = 70.6 \approx 71\ \text{k-ft} \quad (\phi = 0.90\ \text{flexure, \S 9.1.4.1})
+\end{align*}
+{\ttfamily\footnotesize TRAPS: forgot $\phi$ $\to$ 79 $\cdot$ lever arm $d-a$ $\to$ 62 $\cdot$ $A_s f_y d$ alone $\to$ 88}
+
 \end{document}
