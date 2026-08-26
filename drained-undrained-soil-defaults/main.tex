@@ -1,0 +1,125 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+
+\graphicspath{{../}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}{\ttfamily\normalsize\bfseries\MakeUppercase}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titleformat{\subsection}{\ttfamily\small\MakeUppercase}{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[L]{\ttfamily\footnotesize DRAINED-UNDRAINED-SOIL-DEFAULTS}
+\fancyfoot[C]{\ttfamily\footnotesize REV \today}
+\fancyfoot[R]{\ttfamily\footnotesize \thepage}
+
+\begin{document}
+
+\noindent\includegraphics[height=0.7cm]{logo}\hfill
+{\ttfamily\normalsize\bfseries\MakeUppercase{Default Drained and Undrained Soil Parameters}}\quad
+{\ttfamily\footnotesize\today}
+\vspace{4pt}\hrule\vspace{6pt}
+
+\section{Default Drained Soil}
+
+Preliminary values for ordinary granular retained soil. Project geotechnical recommendations govern.
+
+{\ttfamily\footnotesize
+\setlength{\arrayrulewidth}{0.5pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{3.05in}r p{2.45in}@{}}
+\hline
+{\scriptsize\bfseries PARAMETER} & {\scriptsize\bfseries DEFAULT} & {\scriptsize\bfseries USE} \\
+\hline
+Effective retained-soil friction angle, $\phi'$ & $28^\circ$ & Drained strength \\
+Moist total unit weight, $\gamma$ & 120--125 pcf & Retained-soil weight \\
+Foundation interface friction coefficient, $\mu$ & 0.35 & Preliminary sliding resistance \\
+Uniform surface surcharge, $q$ & 100 psf & Minimum general surcharge \\
+Allowable soil bearing pressure, $q_a$ & 2,000 psf & Preliminary footing sizing \\
+Rankine active coefficient, $K_a$ & 0.361 & Yielding wall \\
+Normally consolidated at-rest coefficient, $K_0$ & 0.531 & Restrained wall \\
+Active equivalent-fluid pressure & 43.3--45.1 pcf & $K_a\gamma$ \\
+At-rest equivalent-fluid pressure & 63.7--66.3 pcf & $K_0\gamma$ \\
+\hline
+\end{tabular*}
+}
+
+Level backfill; vertical wall; no cohesion; no groundwater or hydrostatic pressure. Confirm $\mu$ and $q_a$ for the foundation soil.
+
+\section{Default Undrained Soil}
+
+No wall drainage is a saturated effective-stress condition. It is not automatically a $\phi_u=0$ total-stress condition.
+
+\medskip{\ttfamily\footnotesize\bfseries SATURATED / NO-DRAIN RETAINED SOIL}
+
+{\ttfamily\footnotesize
+\setlength{\arrayrulewidth}{0.5pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{3.05in}r p{2.45in}@{}}
+\hline
+{\scriptsize\bfseries PARAMETER} & {\scriptsize\bfseries DEFAULT} & {\scriptsize\bfseries USE} \\
+\hline
+Effective retained-soil friction angle, $\phi'$ & $28^\circ$ & Saturated drained strength \\
+Saturated total unit weight, $\gamma_{\mathrm{sat}}$ & 125 pcf & Total soil weight \\
+Fresh-water unit weight, $\gamma_w$ & 62.4 pcf & Hydrostatic pressure \\
+Submerged unit weight, $\gamma'$ & 62.6 pcf & $\gamma_{\mathrm{sat}}-\gamma_w$ \\
+Rankine active coefficient, $K_a$ & 0.361 & Yielding wall \\
+Normally consolidated at-rest coefficient, $K_0$ & 0.531 & Restrained wall \\
+Active total equivalent-fluid pressure & 85.0 pcf & $K_a\gamma'+\gamma_w$ \\
+At-rest total equivalent-fluid pressure & 95.6 pcf & $K_0\gamma'+\gamma_w$ \\
+Active lateral surcharge pressure & 36.1 psf & $K_aq$ \\
+At-rest lateral surcharge pressure & 53.1 psf & $K_0q$ \\
+Foundation interface coefficient, $\mu$ & Site-specific & Include uplift in base normal force \\
+Allowable soil bearing pressure, $q_a$ & Site-specific & Saturated foundation soil \\
+\hline
+\end{tabular*}
+}
+
+Groundwater at retained grade. Effective soil pressure and full hydrostatic pressure are included in the total equivalent-fluid pressures above.
+
+\medskip{\ttfamily\footnotesize\bfseries TRUE UNDRAINED TOTAL-STRESS SOIL}
+
+{\ttfamily\footnotesize
+\setlength{\arrayrulewidth}{0.5pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{3.05in}r p{2.45in}@{}}
+\hline
+{\scriptsize\bfseries PARAMETER} & {\scriptsize\bfseries DEFAULT} & {\scriptsize\bfseries USE} \\
+\hline
+Total-stress friction angle, $\phi_u$ & $0^\circ$ & Saturated undrained clay \\
+Saturated total unit weight, $\gamma_{\mathrm{sat}}$ & 125 pcf & Total-stress soil weight \\
+Undrained shear strength, $s_u$ & Site-specific & Required geotechnical input \\
+Foundation interface adhesion, $c_a$ & Site-specific & Preliminary sliding resistance \\
+Uniform surface surcharge, $q$ & 100 psf & Minimum general surcharge \\
+Allowable soil bearing pressure, $q_a$ & Site-specific & Determine from foundation-soil $s_u$ \\
+\hline
+\end{tabular*}
+}
+
+For a yielding wall with level backfill:
+
+\begin{equation}
+p_a(z)=\max\left[0,\ \gamma_{\mathrm{sat}}z+q-2s_u\right]
+\end{equation}
+{\ttfamily\footnotesize
+\begin{tabular}{@{}ll@{}}
+$p_a(z)$ & total active lateral pressure at depth $z$, psf \\
+$z$ & depth below retained grade, ft
+\end{tabular}
+}
+
+Do not derive $s_u$ from $\phi'$, $\mu$, or $q_a$. Do not add pore pressure separately throughout a consistent total-stress analysis; account separately for free water, differential water levels, uplift, and water-filled tension cracks.
+
+\end{document}
